@@ -8,11 +8,11 @@ packages="\
     bzip2 \
     libgpg-error \
     libgcrypt \
-    libldns \
     GnuPG \
     expat \
     openssl \
     libssh2 \
+    libldns \
     cURL \
     soci \
     sqlcipher \
