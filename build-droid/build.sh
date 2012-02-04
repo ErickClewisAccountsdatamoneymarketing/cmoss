@@ -20,6 +20,7 @@ packages="\
     liblog4c \
     boost \
     breakpad \
+    libjudy \
 "
 default="\
     bzip2 \
@@ -34,6 +35,7 @@ default="\
     libgcrypt \
     libgpg-error \
     cares \
+    libjudy \
 "
 for p in ${packages[@]}; do
     declare PKG_${p//[-.]/_}=0

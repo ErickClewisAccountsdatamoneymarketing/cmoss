@@ -1,0 +1,22 @@
+--- judy-1.0.5/src/JudyL/Makefile	2012-02-04 11:02:19.067358346 -0800
++++ judy-1.0.5/src/JudyL/Makefile	2012-02-04 11:07:19.523344286 -0800
+@@ -560,7 +560,7 @@
+ 
+ 
+ JudyLTables.c: JudyLTablesGen.c
+-	$(CC) $(INCLUDES) $(AM_CFLAGS) -UJU_64BIT -Os -pipe -isysroot /home/thunder/android/cmoss/tmp/droidtoolchains/arm-linux-androideabi/sysroot -I/home/thunder/android/cmoss/tmp/build/droid/arm-linux-androideabi/include -o JudyLTablesGen JudyLTablesGen.c; ./JudyLTablesGen 
++	gcc $(INCLUDES) $(AM_CFLAGS) -UJU_64BIT -Os -pipe -o JudyLTablesGen JudyLTablesGen.c; ./JudyLTablesGen 
+ 
+ JudyLByCount.c:   ../JudyCommon/JudyByCount.c
+ 	cp -f ../JudyCommon/JudyByCount.c      		JudyLByCount.c   
+--- judy-1.0.5/src/Judy1/Makefile	2012-02-04 11:02:18.987358350 -0800
++++ judy-1.0.5/src/Judy1/Makefile	2012-02-04 11:06:58.863344368 -0800
+@@ -560,7 +560,7 @@
+ 
+ 
+ Judy1Tables.c: Judy1TablesGen.c
+-	$(CC) $(INCLUDES) $(AM_CFLAGS) -UJU_64BIT -Os -pipe -isysroot /home/thunder/android/cmoss/tmp/droidtoolchains/arm-linux-androideabi/sysroot -I/home/thunder/android/cmoss/tmp/build/droid/arm-linux-androideabi/include -o Judy1TablesGen Judy1TablesGen.c; ./Judy1TablesGen
++	gcc $(INCLUDES) $(AM_CFLAGS) -UJU_64BIT -Os -pipe -o Judy1TablesGen Judy1TablesGen.c; ./Judy1TablesGen
+ 
+ Judy1ByCount.c:../JudyCommon/JudyByCount.c
+ 	cp -f ../JudyCommon/JudyByCount.c      		Judy1ByCount.c   
