@@ -26,46 +26,18 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "c-ares-${CARES_VERSION}.tar.gz" ]
-then
-  curl $PROXY -O "http://c-ares.haxx.se/download/c-ares-${CARES_VERSION}.tar.gz"
-fi
+PKG_NAME="c-ares"
+PKG_VERSION=1.7.5
+PKG_URL=http://c-ares.haxx.se/download
 
-# Extract source
-rm -rf "c-ares-${CARES_VERSION}"
-tar zxvf "c-ares-${CARES_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "c-ares-${CARES_VERSION}"
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
-export CFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR}
 
-./configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR}
-
-# Fix ares.h to compile on linux based systems
-mv "ares.h" "ares.h~"
-sed 's/#include <sys\/types.h>/#include <sys\/select.h>\
-#include <sys\/types.h>/' ares.h~ > ares.h
-
-# Fix ares_config.h file
-mv "ares_config.h" "ares_config.h~"
-sed 's/#define HAVE_ARPA_NAMESER_H 1//' ares_config.h~ > ares_config.h
+${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
 make
 make install
-popd
-
-# Clean up
-rm -rf "c-ares-${CARES_VERSION}"

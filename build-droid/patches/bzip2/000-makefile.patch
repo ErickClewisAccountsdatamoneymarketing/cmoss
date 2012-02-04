@@ -1,0 +1,52 @@
+--- bzip2-1.0.6/Makefile	2010-09-10 15:46:02.000000000 -0700
++++ bzip2-1.0.6/Makefile	2012-02-03 23:11:27.612688719 -0800
+@@ -14,19 +14,9 @@
+ 
+ SHELL=/bin/sh
+ 
+-# To assist in cross-compiling
+-CC=gcc
+-AR=ar
+-RANLIB=ranlib
+-LDFLAGS=
+-
+ BIGFILES=-D_FILE_OFFSET_BITS=64
+ CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+ 
+-# Where you want it installed when you do 'make install'
+-PREFIX=/usr/local
+-
+-
+ OBJS= blocksort.o  \
+       huffman.o    \
+       crctable.o   \
+@@ -35,7 +25,7 @@
+       decompress.o \
+       bzlib.o
+ 
+-all: libbz2.a bzip2 bzip2recover test
++all: libbz2.a bzip2 bzip2recover
+ 
+ bzip2: libbz2.a bzip2.o
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2 bzip2.o -L. -lbz2
+@@ -51,6 +41,8 @@
+ 		echo $(RANLIB) libbz2.a ; \
+ 		$(RANLIB) libbz2.a ; \
+ 	fi
++	$(CC) -shared -Wl,-soname -Wl,libbz2.so.1.0 -o libbz2.so.1.0.6 $(OBJS)
++	$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.so.1.0.6
+ 
+ check: test
+ test: bzip2
+@@ -87,6 +79,11 @@
+ 	chmod a+r $(PREFIX)/man/man1/bzip2.1
+ 	cp -f bzlib.h $(PREFIX)/include
+ 	chmod a+r $(PREFIX)/include/bzlib.h
++	cp -f libbz2.so.1.0.6 $(PREFIX)/lib
++	rm -f $(PREFIX)/lib/libbz2.so
++	rm -f $(PREFIX)/lib/libbz2.so.1.0
++	ln -s $(PREFIX)/lib/libbz2.so.1.0.6 $(PREFIX)/lib/libbz2.so.1.0
++	ln -s $(PREFIX)/lib/libbz2.so.1.0.6 $(PREFIX)/lib/libbz2.so
+ 	cp -f libbz2.a $(PREFIX)/lib
+ 	chmod a+r $(PREFIX)/lib/libbz2.a
+ 	cp -f bzgrep $(PREFIX)/bin/bzgrep

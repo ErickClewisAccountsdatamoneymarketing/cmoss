@@ -1,0 +1,10 @@
+--- curl-7.23.1/include/curl/curl.h	2011-11-04 15:32:55.000000000 -0700
++++ curl-7.23.1.new/include/curl/curl.h	2012-01-30 09:16:43.147076312 -0800
+@@ -52,6 +52,7 @@
+ #endif
+ 
+ /* The include stuff here below is mainly for time_t! */
++#include <sys/select.h>
+ #include <sys/types.h>
+ #include <time.h>
+ 

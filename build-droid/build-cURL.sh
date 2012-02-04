@@ -26,48 +26,22 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "curl-${CURL_VERSION}.tar.gz" ]
-then
-  curl $PROXY -O "http://curl.haxx.se/download/curl-${CURL_VERSION}.tar.gz"
-fi
+PKG_NAME=curl
+PKG_VERSION=7.23.1
+PKG_URL=http://curl.haxx.se/download
 
-# Extract source
-rm -rf "curl-${CURL_VERSION}"
-tar zxvf "curl-${CURL_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "curl-${CURL_VERSION}"
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -nostdlib -lc -Wl,-rpath-link=${SYSROOT}/usr/lib -L${SYSROOT}/usr/lib -L${ROOTDIR}/lib -lgpg-error -lgcrypt"
-export CFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
 
-./configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-ssl=${ROOTDIR} --with-zlib=${ROOTDIR} --with-libssh2=${ROOTDIR} --with-random=/dev/urandom --disable-ipv6 --disable-manual --disable-verbose
+LDFLAGS="$LDFLAGS -lgpg-error -lgcrypt"
 
-# Fix curl.h to compile on linux based systems
-mv "include/curl/curl.h" "include/curl/curl.h~"
-sed 's/#include <sys\/types.h>/#include <sys\/select.h>\
-#include <sys\/types.h>/' include/curl/curl.h~ > include/curl/curl.h
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-ssl=${ROOTDIR} --with-zlib=${ROOTDIR} --with-libssh2=${ROOTDIR} --with-random=/dev/urandom --disable-manual --enable-ipv6
 
-pushd "lib"
+${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
+
 make
 make install
-popd
-pushd "include"
-make
-make install
-popd
-popd
 
-# Clean up
-rm -rf "curl-${CURL_VERSION}"

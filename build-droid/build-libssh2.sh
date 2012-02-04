@@ -26,38 +26,19 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "libssh2-${LIBSSH2_VERSION}.tar.gz" ]
-then
-  curl $PROXY -O "http://www.libssh2.org/download/libssh2-${LIBSSH2_VERSION}.tar.gz"
-fi
+PKG_NAME=libssh2
+PKG_VERSION=1.3.0
+PKG_URL=http://www.libssh2.org/download
 
-# Extract source
-rm -rf "libssh2-${LIBSSH2_VERSION}"
-tar zxvf "libssh2-${LIBSSH2_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "libssh2-${LIBSSH2_VERSION}"
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib -lgpg-error"
-export CFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
 
-./configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-libgcrypt --with-libgcrypt-prefix=${ROOTDIR} --with-libz --with-libz-prefix=${ROOTDIR} -with-openssl --with-libssl-prefix=${ROOTDIR} CFLAGS="${CFLAGS}"
+LDFLAGS="$LDFLAGS -lgpg-error"
+
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-libgcrypt --with-libgcrypt-prefix=${ROOTDIR} --with-libz --with-libz-prefix=${ROOTDIR} -with-openssl --with-libssl-prefix=${ROOTDIR} CFLAGS="${CFLAGS}"
 
 make
 make install
-
-popd
-
-# Clean up
-rm -rf "libssh2-${LIBSSH2_VERSION}"

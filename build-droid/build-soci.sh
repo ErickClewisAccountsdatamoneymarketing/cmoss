@@ -26,43 +26,26 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "soci-${SOCI_VERSION}.zip" ]
-then
-  curl $PROXY -O "http://surfnet.dl.sourceforge.net/project/soci/soci/soci-${SOCI_VERSION}/soci-${SOCI_VERSION}.zip"
-fi
+PKG_NAME=soci
+PKG_VERSION="1.1.8"
+PKG_ARCHIVE=soci-$PKG_VERSION.zip
+PKG_URL="http://surfnet.dl.sourceforge.net/project/soci/soci"
 
-# Extract source
-rm -rf "soci-${SOCI_VERSION}"
-unzip "soci-${SOCI_VERSION}.zip"
+. `dirname $0`/common.sh
+env_setup $@
+
+pkg_setup $@
+cd $PKG_DIR
 
 # Copy customized make files
-cp -f ${TOPDIR}/build-droid/Makefile.soci-core soci-${SOCI_VERSION}/core
-cp -f ${TOPDIR}/build-droid/Makefile.soci-sqlite3 soci-${SOCI_VERSION}/backends/sqlite3
+cp -f ${TOPDIR}/build-droid/patches/soci/Makefile.soci-core core/
+cp -f ${TOPDIR}/build-droid/patches/soci/Makefile.soci-sqlite3 backends/sqlite3/
 
-# Build
 BIGFILES=-D_FILE_OFFSET_BITS=64
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -nostdlib -lc -shared -Wl,-rpath-link=${SYSROOT}/usr/lib -L${SYSROOT}/usr/lib -L${ROOTDIR}/lib"
-export CFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include -g ${BIGFILES}"
-export CXXFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include -g ${BIGFILES}"
+LDFLAGS="$LDFLAGS -shared"
+CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
+CXXFLAGS="CXXFLAGS -D_FILE_OFFSET_BITS=64"
 
-pushd soci-${SOCI_VERSION}/core
-make -f Makefile.soci-core install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${ROOTDIR}"
-popd
-pushd soci-${SOCI_VERSION}/backends/sqlite3
-make -f Makefile.soci-sqlite3 install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${ROOTDIR}"
-popd
-
-# Clean up
-rm -rf soci-${SOCI_VERSION}
+make -f Makefile.soci-core -C soci-${SOCI_VERSION}/core install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${ROOTDIR}"
+make -f Makefile.soci-sqlite3 -C soci-${SOCI_VERSION}/backends/sqlite3 install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${ROOTDIR}"
 

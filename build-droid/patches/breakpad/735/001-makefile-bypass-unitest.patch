@@ -1,0 +1,22 @@
+--- breakpad-735/Makefile	2012-01-30 13:57:30.095521076 -0800
++++ breakpad-735/Makefile.new	2012-01-30 13:38:12.567487812 -0800
+@@ -107,8 +107,8 @@
+ #	src/processor/stackwalker_x86_unittest \
+ #	src/processor/synth_minidump_unittest
+ 
+-am__append_7 = \
+-	src/client/linux/linux_client_unittest
++# am__append_7 = \
++	# src/client/linux/linux_client_unittest
+ 
+ ##am__append_8 = \
+ ##	src/processor/stackwalker_selftest
+@@ -345,7 +345,7 @@
+ #	src/processor/minidump_dump$(EXEEXT) \
+ #	src/processor/minidump_stackwalk$(EXEEXT) \
+ #	src/processor/source_daemon$(EXEEXT)
+-am__EXEEXT_2 = src/client/linux/linux_dumper_unittest_helper$(EXEEXT)
++# am__EXEEXT_2 = src/client/linux/linux_dumper_unittest_helper$(EXEEXT)
+ #am__EXEEXT_3 = src/common/test_assembler_unittest$(EXEEXT) \
+ #	src/processor/address_map_unittest$(EXEEXT) \
+ #	src/processor/binarystream_unittest$(EXEEXT) \

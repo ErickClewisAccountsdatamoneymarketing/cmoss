@@ -26,37 +26,20 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "openssl-${OPENSSL_VERSION}.tar.gz" ]
-then
-  curl $PROXY -O "http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz"
-fi
+PKG_NAME=openssl
+PKG_VERSION="1.0.0f"
+PKG_URL=http://www.openssl.org/source
 
-# Extract source
-rm -rf "openssl-${OPENSSL_VERSION}"
-tar zxvf "openssl-${OPENSSL_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "openssl-${OPENSSL_VERSION}"
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -dynamiclib -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
-export CFLAGS="-Os -pipe -UOPENSSL_BN_ASM_PART_WORDS -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
 
-./Configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${ROOTDIR} linux-generic32
+LDFLAGS="$LDFLAGS -dynamiclib"
+CFLAGS="$CFLAGS -UOPENSSL_BN_ASM_PART_WORDS"
+
+call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${ROOTDIR} linux-generic32
 
 make CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
 make install
-popd
-
-# Clean up
-rm -rf "openssl-${OPENSSL_VERSION}"

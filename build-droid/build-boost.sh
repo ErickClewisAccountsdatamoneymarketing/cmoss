@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Copyright (c) 2011, Mevan Samaratunga
@@ -26,20 +26,17 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-BOOST_SOURCE_NAME=boost_${BOOST_VERSION//./_}
+PKG_NAME=boost
+PKG_VERSION=1.48.0
+PKG_DIR_NAME=boost_${PKG_VERSION//./_}
+PKG_ARCHIVE=$PKG_DIR_NAME.tar.bz2
+PKG_URL=http://surfnet.dl.sourceforge.net/project/boost/boost/$PKG_VERSION
 
-# Download source
-if [ ! -e "${BOOST_SOURCE_NAME}.tar.gz" ]
-then
-  curl $PROXY -O "http://surfnet.dl.sourceforge.net/project/boost/boost/${BOOST_VERSION}/${BOOST_SOURCE_NAME}.tar.gz"
-fi
+. `dirname $0`/common.sh
+env_setup $@
 
-# Extract source
-rm -rf "${BOOST_SOURCE_NAME}"
-tar zxvf "${BOOST_SOURCE_NAME}.tar.gz"
-
-pushd "${BOOST_SOURCE_NAME}"
-tar zxvf "${TOPDIR}/build-droid/droid-boost-patch.tar.gz"
+pkg_setup $@
+cd $PKG_DIR
 
 # Build
 
@@ -47,13 +44,17 @@ tar zxvf "${TOPDIR}/build-droid/droid-boost-patch.tar.gz"
 # Bootstrap
 # ---------
 
-# Make the initial bootstrap
-echo "Performing boost boostrap"
+if test ! -f .$PKG_NAME-inited; then
+    # Make the initial bootstrap
+    echo "Performing boost boostrap"
 
-./bootstrap.sh
-if [ $? != 0 ] ; then
-	echo "ERROR: Could not perform boostrap! See $TMPLOG for more info."
-	exit 1
+    ./bootstrap.sh
+    if [ $? != 0 ] ; then
+        echo "ERROR: Could not perform boostrap! See $TMPLOG for more info."
+        exit 1
+    fi
+
+    touch .$PKG_NAME-inited
 fi
 
 # -------------------------------------------------------------
@@ -61,33 +62,15 @@ fi
 # -------------------------------------------------------------
 
 # Apply patches to boost
-PATCHES_DIR=droid-boost-patch/build
-if [ ! -d "$PATCHES_DIR" ] ; then
-	echo "ERROR: Could not locate droid build patch files."
-	exit 1
-fi
+${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
-PATCHES=`(cd $PATCHES_DIR && find . -name "*.patch" | sort) 2> /dev/null`
-if [ -z "$PATCHES" ] ; then
-	echo "No patches files in $PATCHES_DIR"
-else
-	PATCHES=`echo $PATCHES | sed -e s%^\./%%g`
-	SRC_DIR=${TMPDIR}/${BOOST_SOURCE_NAME}
-	for PATCH in $PATCHES; do
-		PATCHDIR=`dirname $PATCH`
-		PATCHNAME=`basename $PATCH`
-		echo "Applying $PATCHNAME into $SRC_DIR/$PATCHDIR"
-		patch -p1 < $PATCHES_DIR/$PATCH
-		if [ $? != 0 ] ; then
-			dump "ERROR: Patch failure !! Please check your patches directory! Try to perform a clean build using --clean"
-			exit 1
-		fi
-	done
-fi
+CRYSTAX_DIR=${TOPDIR}/build-droid/patches/crystax-ndk-headers
 
-BOOSTPATCH=${TMPDIR}/${BOOST_SOURCE_NAME}/droid-boost-patch
+test -d $CRYSTAX_DIR || \
+    (cd `dirname $CRYSTAX_DIR`; tar xf $CRYSTAX_DIR.tar.gz)
 
-cat >> tools/build/v2/user-config.jam <<EOF
+if test ! -f .$PKG_NAME-configured; then
+    cat >> tools/build/v2/user-config.jam <<EOF
 
 using android : i686 : ${DROIDTOOLS}-g++ :
 <compileflags>-Os
@@ -104,15 +87,15 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 <compileflags>-DANDROID
 <compileflags>-D__ANDROID__
 <compileflags>-DNDEBUG
-<compileflags>-I${BOOSTPATCH}/crystax-ndk-headers/platforms/android-14/arch-x86/usr/include
-<compileflags>-I${BOOSTPATCH}/crystax-ndk-headers/sources/cxx-stl/gnu-libstdc++/include/4.4.3
-<compileflags>-I${BOOSTPATCH}/crystax-ndk-headers/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3/include
+<compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-x86/usr/include
+<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
+<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3/include
 <compileflags>-I${ROOTDIR}/include
 <linkflags>-nostdlib
 <linkflags>-lc
 <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
 <linkflags>-L${SYSROOT}/usr/lib
-<linkflags>-L${BOOSTPATCH}/crystax-ndk-headers/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3
+<linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3
 <linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>x86
@@ -149,15 +132,15 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <compileflags>-DANDROID
 <compileflags>-D__ANDROID__
 <compileflags>-DNDEBUG
-<compileflags>-I${BOOSTPATCH}/crystax-ndk-headers/platforms/android-14/arch-arm/usr/include
-<compileflags>-I${BOOSTPATCH}/crystax-ndk-headers/sources/cxx-stl/gnu-libstdc++/include/4.4.3
-<compileflags>-I${BOOSTPATCH}/crystax-ndk-headers/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3/include
+<compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-arm/usr/include
+<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
+<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3/include
 <compileflags>-I${ROOTDIR}/include
 <linkflags>-nostdlib
 <linkflags>-lc
 <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
 <linkflags>-L${SYSROOT}/usr/lib
-<linkflags>-L${BOOSTPATCH}/crystax-ndk-headers/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
+<linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
 <linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>arm
@@ -173,7 +156,7 @@ using android : arm : ${DROIDTOOLS}-g++ :
 ;
 EOF
 
-cat >> project-config.jam <<EOF
+    cat >> project-config.jam <<EOF
 libraries = --with-date_time --with-filesystem --with-program_options --with-regex --with-signals --with-system --with-thread --with-iostreams ;
 
 option.set prefix : ${ROOTDIR}/ ;
@@ -182,6 +165,9 @@ option.set libdir : ${ROOTDIR}/lib ;
 option.set includedir : ${ROOTDIR}/include ;
 EOF
 
+    touch .$PKG_NAME-configured
+fi
+
 if [ "${PLATFORM}" == "arm-linux-androideabi" ]
 then
 	./b2 threading=multi --layout=versioned target-os=linux toolset=android-arm install
@@ -189,11 +175,7 @@ else
 	./b2 threading=multi --layout=versioned target-os=linux toolset=android-i686 install
 fi
 
+rm -rf ${ROOTDIR}/include/boost
 mv ${ROOTDIR}/include/boost-*/boost ${ROOTDIR}/include
 rm -fr ${ROOTDIR}/include/boost-*
 
-#===============================================================================
-
-# Clean up
-popd
-rm -rf "${BOOST_SOURCE_NAME}"

@@ -26,37 +26,21 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "sqlcipher-${SQLCIPHER_VERSION}.tar.gz" ]
-then
-  curl $PROXY -o "sqlcipher-${SQLCIPHER_VERSION}.tar.gz" -L "https://github.com/sjlombardo/sqlcipher/tarball/v${SQLCIPHER_VERSION}"
-fi
+PKG_NAME=sqlcipher
+PKG_VERSION="3.1.0"
+PKG_URL=https://github.com/sjlombardo/sqlcipher/tarball/v$PKG_VERSION
 
-# Extract source
-rm -rf sjlombardo-sqlcipher-*
-tar zxvf "sqlcipher-${SQLCIPHER_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd sjlombardo-sqlcipher-*
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -nostdlib -lc -Wl,-rpath-link=${SYSROOT}/usr/lib -L${SYSROOT}/usr/lib -L${ROOTDIR}/lib -lssl -lcrypto"
-export CFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include -DSQLITE_HAS_CODEC"
-export CXXFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include -DSQLITE_HAS_CODEC"
+pkg_setup $@
+cd $PKG_DIR
 
-./configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-readline --disable-tcl --enable-tempstore=no
+LDFLAGS="$LDFLGS -lssl -lcrypto"
+CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64 -DSQLITE_HAS_CODEC"
+CXXFLAGS="$CXXFLAGS -D_FILE_OFFSET_BITS=64 -DSQLITE_HAS_CODEC"
+
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-readline --disable-tcl --enable-tempstore=no
 
 make
 make install
-popd
-
-# Clean up
-rm -rf sjlombardo-sqlcipher-*

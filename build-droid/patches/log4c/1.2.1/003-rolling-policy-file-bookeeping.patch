@@ -1,0 +1,38 @@
+diff -ruN log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c log4c-1.2.1-patched/src/log4c/rollingpolicy_type_sizewin.c
+--- log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c	2007-09-25 03:12:16.000000000 +0800
++++ log4c-1.2.1-patched/src/log4c/rollingpolicy_type_sizewin.c	2011-08-12 01:33:57.000000000 +0800
+@@ -119,7 +119,7 @@
+   
+    k = swup->sw_last_index;
+ 
+-   if ( k < 0 ) {
++   if ( k < 0 || *current_fpp == NULL) {
+      sd_debug("creating first file");
+      if (sizewin_open_zero_file(swup->sw_filenames[0], current_fpp)){
+        swup->sw_flags |= SW_LAST_FOPEN_FAILED;
+@@ -127,7 +127,7 @@
+      } else{
+        swup->sw_flags &= !SW_LAST_FOPEN_FAILED;
+      }
+-     swup->sw_last_index = 0;
++     if(k<0) swup->sw_last_index = 0;
+    } else {
+      sd_debug("rolling up existing files");
+ 
+@@ -176,6 +176,7 @@
+        }
+        if ( !rc){
+          swup->sw_last_index = k + 1;
++         remove(swup->sw_filenames[0]);
+        }
+      } else {
+        sd_debug("not rotating up--some file access error");
+@@ -390,7 +391,7 @@
+   int rc = 0;
+   sd_debug("sizewin_open_zero_file['%s'", filename);
+ 
+-  if ( (*fpp = fopen(filename, "w+")) == NULL){
++  if ( (*fpp = fopen(filename, "a+")) == NULL){
+    sd_error("failed to open zero file '%s'--defaulting to stderr--error='%s'",
+      filename, strerror(errno));    
+    *fpp = stderr;

@@ -1,0 +1,21 @@
+diff -ru log4c-1.2.1/configure log4c-1.2.1-patched/configure
+--- log4c-1.2.1/configure	2007-09-25 03:15:22.000000000 +0800
++++ log4c-1.2.1-patched/configure	2012-01-30 18:13:05.336584700 +0800
+@@ -20117,7 +20117,7 @@
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lpthread  $LIBS"
++# LIBS="-lpthread  $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
+@@ -20174,7 +20174,7 @@
+ echo "${ECHO_T}$ac_cv_lib_pthread_pthread_mutex_init" >&6; }
+ if test $ac_cv_lib_pthread_pthread_mutex_init = yes; then
+ 
+-                LIBS="$LIBS -lpthread"
++                # LIBS="$LIBS -lpthread"
+ 
+ cat >>confdefs.h <<\_ACEOF
+ #define WITH_ROLLINGFILE

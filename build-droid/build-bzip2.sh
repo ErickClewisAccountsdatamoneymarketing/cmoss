@@ -26,37 +26,18 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "bzip2-${BZIP2_VERSION}.tar.gz" ]
-then
-  curl $PROXY -O "http://bzip.org/${BZIP2_VERSION}/bzip2-${BZIP2_VERSION}.tar.gz"
-fi
+PKG_NAME=bzip2
+PKG_VERSION=1.0.6
+PKG_URL=http://bzip.org/$PKG_VERSION
 
-# Extract source
-rm -rf "bzip2-${BZIP2_VERSION}"
-tar zxvf "bzip2-${BZIP2_VERSION}.tar.gz"
-cp ${TOPDIR}/build-droid/Makefile.bzip2 bzip2-${BZIP2_VERSION}/Makefile
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "bzip2-${BZIP2_VERSION}"
-BIGFILES=-D_FILE_OFFSET_BITS=64
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
-export CFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include -g ${BIGFILES}"
-export CXXFLAGS="-Os -D_FILE_OFFSET_BITS=64 -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
+
+${TOPDIR}/helper/patch.sh ${PKG_NAME} -v ${PKG_VERSION} || exit 1
 
 make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" CFLAGS="${CFLAGS}"
 make install PREFIX=${ROOTDIR}  # Ignore errors due to share libraries missing
-popd
 
-# Clean up
-rm -rf "bzip2-${BZIP2_VERSION}"

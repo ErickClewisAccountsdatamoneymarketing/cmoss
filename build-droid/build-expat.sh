@@ -26,37 +26,17 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "expat-${EXPAT_VERSION}.tar.gz" ]
-then
-  curl $PROXY -O "http://ncu.dl.sourceforge.net/project/expat/expat/${EXPAT_VERSION}/expat-${EXPAT_VERSION}.tar.gz"
-fi
+PKG_NAME=expat
+PKG_VERSION=2.0.1
+PKG_URL=http://ncu.dl.sourceforge.net/project/expat/expat/$PKG_VERSION
 
-# Extract source
-rm -rf "expat-${EXPAT_VERSION}"
-tar zxvf "expat-${EXPAT_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "expat-${EXPAT_VERSION}"
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
-export CFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
 
-./configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR}
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR}
 
 make
 make install --ignore-errors  # Ignore errors due to share libraries missing
-popd
-
-# Clean up
-rm -rf "expat-${EXPAT_VERSION}"

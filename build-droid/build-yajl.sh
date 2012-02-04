@@ -26,68 +26,21 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "yajl-${YAJL_VERSION}.tar.gz" ]
-then
-  curl $PROXY -o "yajl-${YAJL_VERSION}.tar.gz" -L "http://github.com/lloyd/yajl/tarball/${YAJL_VERSION}"
-fi
+PKG_NAME=yajl
+PKG_VERSION="2.0.1"
+PKG_URL=http://github.com/lloyd/yajl/tarball/$PKG_VERSION
 
-# Extract source
-rm -rf lloyd-yajl-*
-tar zxvf "yajl-${YAJL_VERSION}.tar.gz"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd lloyd-yajl-*
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
-export CFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
 
-mv "CMakeLists.txt" "CMakeLists.txt~1"
-sed 's/ADD_SUBDIRECTORY(test)//' CMakeLists.txt~1 > CMakeLists.txt~2
-sed 's/ADD_SUBDIRECTORY(reformatter)//' CMakeLists.txt~2 > CMakeLists.txt~3
-sed 's/ADD_SUBDIRECTORY(verify)//' CMakeLists.txt~3 > CMakeLists.txt
+${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
-# Remove test and doc targets as that fails for device builds
 ./configure --prefix=${ROOTDIR}
 
-mv "build/Makefile" "build/Makefile~"
-sed 's/preinstall\: all/preinstall\:/g' build/Makefile~ > build/Makefile
-
-mv "build/src/CMakeFiles/yajl.dir/build.make" "build/src/CMakeFiles/yajl.dir/build.make~"
-sed 's/\.dylib/\.so/g' build/src/CMakeFiles/yajl.dir/build.make~ > build/src/CMakeFiles/yajl.dir/build.make
-
-FILES=`sed 's/^.*dylib CMakeFiles/CMakeFiles/' build/src/CMakeFiles/yajl.dir/link.txt`
-echo "${CC} -nostdlib -lc -shared -Wl,-rpath-link=${SYSROOT}/usr/lib -L${SYSROOT}/usr/lib -I${SYSROOT}/usr/include -o ../yajl-${YAJL_VERSION}/lib/libyajl.${YAJL_VERSION}.so $FILES" \
-	> build/src/CMakeFiles/yajl.dir/link.txt
-
-STATICLINKFILES="${AR} `sed 's/\/usr\/bin\/ar //' build/src/CMakeFiles/yajl_s.dir/link.txt | sed 's/^\/usr\/bin\/ranlib.*//'`"
-
-echo "$STATICLINKFILES\n${RANLIB} ../yajl-${YAJL_VERSION}/lib/libyajl_s.a" \
-	> build/src/CMakeFiles/yajl_s.dir/link.txt
-
-mv "build/src/cmake_install.cmake" "build/src/cmake_install.cmake~"
-sed 's/\.dylib/\.so/g' build/src/cmake_install.cmake~ > build/src/cmake_install.cmake
-
-echo ".PHONY: all distro" > Makefile
-echo "all: distro" >> Makefile
-echo "\ndistro:" >> Makefile
-echo "\t@cd build && make yajl yajl_s" >> Makefile
-echo "\ninstall: all" >> Makefile
-echo "\t@cd build && make install" >> Makefile
+${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION -t post || exit 1
 
 make
 make install
-popd
-
-# Clean up
-rm -rf lloyd-yajl-*

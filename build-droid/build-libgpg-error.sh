@@ -26,37 +26,18 @@ set -e
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Download source
-if [ ! -e "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2" ]
-then
-  curl $PROXY -O "ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
-fi
+PKG_NAME=libgpg-error
+PKG_VERSION=1.10
+PKG_ARCHIVE=libgpg-error-$PKG_VERSION.tar.bz2
+PKG_URL=ftp://ftp.gnupg.org/gcrypt/libgpg-error
 
-# Extract source
-rm -rf "libgpg-error-${LIBGPG_ERROR_VERSION}"
-tar zxvf "libgpg-error-${LIBGPG_ERROR_VERSION}.tar.bz2"
+. `dirname $0`/common.sh
+env_setup $@
 
-# Build
-pushd "libgpg-error-${LIBGPG_ERROR_VERSION}"
-export CC=${DROIDTOOLS}-gcc
-export LD=${DROIDTOOLS}-ld
-export CPP=${DROIDTOOLS}-cpp
-export CXX=${DROIDTOOLS}-g++
-export AR=${DROIDTOOLS}-ar
-export AS=${DROIDTOOLS}-as
-export NM=${DROIDTOOLS}-nm
-export STRIP=${DROIDTOOLS}-strip
-export CXXCPP=${DROIDTOOLS}-cpp
-export RANLIB=${DROIDTOOLS}-ranlib
-export LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
-export CFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
-export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
+pkg_setup $@
+cd $PKG_DIR
 
-./configure --host=${ARCH}-android-linux --target=${PLATFORM} --enable-shared --enable-static --prefix=${ROOTDIR}
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --enable-shared --enable-static --prefix=${ROOTDIR}
 
 make
 make install
-popd
-
-# Clean up
-rm -rf "libgpg-error-${LIBGPG_ERROR_VERSION}"
