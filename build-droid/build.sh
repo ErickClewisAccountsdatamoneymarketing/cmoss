@@ -25,7 +25,7 @@ packages="\
 default="\
     bzip2 \
     expat \
-    log4c \
+    liblog4c \
     openssl \
     libssh2 \
     cURL \
