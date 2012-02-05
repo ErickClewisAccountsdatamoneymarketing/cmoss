@@ -66,8 +66,8 @@ ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
 CRYSTAX_DIR=${TOPDIR}/build-droid/patches/crystax-ndk-headers
 
-test -d $CRYSTAX_DIR || \
-    (cd `dirname $CRYSTAX_DIR`; tar xf $CRYSTAX_DIR.tar.gz)
+# test -d $CRYSTAX_DIR || \
+    # (cd `dirname $CRYSTAX_DIR`; tar xf $CRYSTAX_DIR.tar.gz)
 
 if test ! -f .$PKG_NAME-configured; then
     cat >> tools/build/v2/user-config.jam <<EOF
@@ -87,20 +87,20 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 <compileflags>-DANDROID
 <compileflags>-D__ANDROID__
 <compileflags>-DNDEBUG
-<compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-x86/usr/include
-<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
-<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3/include
+# <compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-x86/usr/include
+# <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
+# <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3/include
 <compileflags>-I${ROOTDIR}/include
-<linkflags>-nostdlib
-<linkflags>-lc
-<linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
+# <linkflags>-nostdlib
+# <linkflags>-lc
+# <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
 <linkflags>-L${SYSROOT}/usr/lib
-<linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3
+# <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3
 <linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>x86
-<compileflags>-fvisibility=hidden
-<compileflags>-fvisibility-inlines-hidden
+# <compileflags>-fvisibility=hidden
+# <compileflags>-fvisibility-inlines-hidden
 <compileflags>-fdata-sections
 <cxxflags>-D_REENTRANT
 <cxxflags>-D_GLIBCXX__PTHREADS
@@ -132,20 +132,20 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <compileflags>-DANDROID
 <compileflags>-D__ANDROID__
 <compileflags>-DNDEBUG
-<compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-arm/usr/include
-<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
-<compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3/include
+# <compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-arm/usr/include
+# <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
+# <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3/include
 <compileflags>-I${ROOTDIR}/include
-<linkflags>-nostdlib
-<linkflags>-lc
-<linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
-<linkflags>-L${SYSROOT}/usr/lib
-<linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
+# <linkflags>-nostdlib
+# <linkflags>-lc
+# <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
+# <linkflags>-L${SYSROOT}/usr/lib
+# <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
 <linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>arm
-<compileflags>-fvisibility=hidden
-<compileflags>-fvisibility-inlines-hidden
+# <compileflags>-fvisibility=hidden
+# <compileflags>-fvisibility-inlines-hidden
 <compileflags>-fdata-sections
 <cxxflags>-D__arm__
 <cxxflags>-D_REENTRANT
