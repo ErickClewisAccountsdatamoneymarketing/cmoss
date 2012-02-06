@@ -77,7 +77,7 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 <compileflags>-O2
 <compileflags>-g
 <compileflags>-fexceptions
-<compileflags>-frtti
+<cxxlags>-frtti
 <compileflags>-fpic
 <compileflags>-ffunction-sections
 <compileflags>-funwind-tables
@@ -114,7 +114,7 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <compileflags>-O2
 <compileflags>-g
 <compileflags>-fexceptions
-<compileflags>-frtti
+<cxxflags>-frtti
 <compileflags>-fpic
 <compileflags>-ffunction-sections
 <compileflags>-funwind-tables
