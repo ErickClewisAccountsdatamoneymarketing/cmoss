@@ -13,7 +13,7 @@ cd $PKG_DIR
 
 LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-ssl=${ROOTDIR} --disable-gost
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-gost --disable-sha2 --without-ssl #--with-ssl=${ROOTDIR} 
 
 make
 make install
