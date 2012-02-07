@@ -94,8 +94,10 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 # <linkflags>-nostdlib
 # <linkflags>-lc
 # <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
-<linkflags>-L${SYSROOT}/usr/lib
-# <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3
+# <linkflags>-L${SYSROOT}/usr/lib
+<linkflags>-Wl,--gc-section
+# <linkflags>-L${CRYSTAX_DIR}/sources/crystax/libs/armeabi-v7a/4.4.3
+# <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
 <linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>x86
@@ -104,6 +106,7 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 <compileflags>-fdata-sections
 <cxxflags>-D_REENTRANT
 <cxxflags>-D_GLIBCXX__PTHREADS
+<cxxflags>-D_GLIBCXX_USE_WCHAR_T
 <cxxflags>-DBOOST_THREAD_LINUX
 <cxxflags>-DBOOST_HAS_PTHREADS
 <cxxflags>-DBOOST_HAS_GETTIMEOFDAY
@@ -133,14 +136,17 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <compileflags>-D__ANDROID__
 <compileflags>-DNDEBUG
 # <compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-arm/usr/include
-# <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
+# <compileflags>-I${CRYSTAX_DIR}/sources/crystax/include
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3/include
+# <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
 <compileflags>-I${ROOTDIR}/include
 # <linkflags>-nostdlib
 # <linkflags>-lc
 # <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
-# <linkflags>-L${SYSROOT}/usr/lib
+<linkflags>-Wl,--gc-section
+# <linkflags>-L${CRYSTAX_DIR}/sources/crystax/libs/armeabi-v7a/4.4.3
 # <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
+#<linkflags>-L${SYSROOT}/usr/lib
 <linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>arm
@@ -150,6 +156,7 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <cxxflags>-D__arm__
 <cxxflags>-D_REENTRANT
 <cxxflags>-D_GLIBCXX__PTHREADS
+<cxxflags>-D_GLIBCXX_USE_WCHAR_T
 <cxxflags>-DBOOST_THREAD_LINUX
 <cxxflags>-DBOOST_HAS_PTHREADS
 <cxxflags>-DBOOST_HAS_GETTIMEOFDAY
