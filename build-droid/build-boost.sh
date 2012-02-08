@@ -157,9 +157,9 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <cxxflags>-D_REENTRANT
 <cxxflags>-D_GLIBCXX__PTHREADS
 <cxxflags>-D_GLIBCXX_USE_WCHAR_T
-<cxxflags>-DBOOST_THREAD_LINUX
-<cxxflags>-DBOOST_HAS_PTHREADS
-<cxxflags>-DBOOST_HAS_GETTIMEOFDAY
+# <cxxflags>-DBOOST_THREAD_LINUX
+# <cxxflags>-DBOOST_HAS_PTHREADS
+# <cxxflags>-DBOOST_HAS_GETTIMEOFDAY
 ;
 EOF
 
