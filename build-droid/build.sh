@@ -4,6 +4,7 @@ set -e
 # Package list
 # A simplistic way of defining dependency by ording, Makefile would be better
 packages="\
+    libevent \
     cares \
     bzip2 \
     libgpg-error \
@@ -23,6 +24,7 @@ packages="\
     libjudy \
 "
 default="\
+    libevent \
     bzip2 \
     expat \
     liblog4c \

@@ -121,7 +121,7 @@ pkg_setup()
             ;;
         *)
             echo URL: $PKG_URL/$PKG_ARCHIVE
-            (cd `dirname $pkg_archive`; curl -fO "$PKG_URL/$PKG_ARCHIVE")
+            (cd `dirname $pkg_archive`; wget "$PKG_URL/$PKG_ARCHIVE")
             tar xf $pkg_archive -C $pkg_dir
             ;;
         esac
