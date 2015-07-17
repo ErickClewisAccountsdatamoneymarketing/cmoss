@@ -1,0 +1,22 @@
+--- a/src/log4c/appender_type_rollingfile.c	2014-06-19 15:31:35.141666262 +0800
++++ b/src/log4c/appender_type_rollingfile.c	2014-06-19 15:37:18.581669494 +0800
+@@ -165,7 +165,7 @@
+      
+   /* only attempt the write if the policy implem says I can */
+   if ( rc <= ROLLINGPOLICY_ROLLOVER_ERR_CAN_LOG ) {	           
+-   rc = fprintf(rfup->rfu_current_fp, a_event->evt_rendered_msg);
++   rc = fputs(a_event->evt_rendered_msg,rfup->rfu_current_fp);
+    rfup->rfu_current_file_size += strlen(a_event->evt_rendered_msg);
+ 
+    /*
+--- a/src/log4c/appender_type_syslog.c	2014-06-25 04:21:35.446110527 +0800
++++ b/src/log4c/appender_type_syslog.c	2014-06-25 04:20:17.978110003 +0800
+@@ -60,7 +60,7 @@
+ {
+ 
+     syslog(log4c_to_syslog_priority(a_event->evt_priority) | LOG_USER, 
+-	   a_event->evt_rendered_msg); 
++	   "%s", a_event->evt_rendered_msg); 
+     return 0;
+ }
+ 

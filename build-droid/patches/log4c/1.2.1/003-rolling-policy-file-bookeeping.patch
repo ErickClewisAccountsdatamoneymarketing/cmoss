@@ -1,6 +1,5 @@
-diff -ruN log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c log4c-1.2.1-patched/src/log4c/rollingpolicy_type_sizewin.c
---- log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c	2007-09-25 03:12:16.000000000 +0800
-+++ log4c-1.2.1-patched/src/log4c/rollingpolicy_type_sizewin.c	2011-08-12 01:33:57.000000000 +0800
+--- a/src/log4c/rollingpolicy_type_sizewin.c	2007-09-25 03:12:16.000000000 +0800
++++ b/src/log4c/rollingpolicy_type_sizewin.c	2011-08-12 01:33:57.000000000 +0800
 @@ -119,7 +119,7 @@
    
     k = swup->sw_last_index;
@@ -36,3 +35,16 @@ diff -ruN log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c log4c-1.2.1-patched
     sd_error("failed to open zero file '%s'--defaulting to stderr--error='%s'",
       filename, strerror(errno));    
     *fpp = stderr;
+--- a/src/log4c/appender_type_rollingfile.c	2014-11-12 01:00:37.151375486 -0800
++++ b/src/log4c/appender_type_rollingfile.c	2015-04-02 19:40:26.684894361 -0700
+@@ -109,7 +109,9 @@
+ 			       &rfup->rfu_current_fp)){
+                                 rc = 1; /* rollover error */
+    } else {
+-    rfup->rfu_current_file_size = 0;
++        fseek(rfup->rfu_current_fp,0,SEEK_END);
++        rfup->rfu_current_file_size = ftell(rfup->rfu_current_fp);
++
+    }
+  } else {
+    /* No policy defined, open it ourselves */
