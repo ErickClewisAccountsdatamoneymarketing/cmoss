@@ -2,7 +2,8 @@
 set -e
 
 PKG_NAME=breakpad
-PKG_VERSION=735
+#PKG_VERSION=735
+PKG_VERSION=1497
 PKG_URL_TYPE=svn
 PKG_URL=http://google-breakpad.googlecode.com/svn/trunk@$PKG_VERSION
 
@@ -12,7 +13,7 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-processor
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-processor --disable-tools
 
 ${TOPDIR}/helper/patch.sh ${PKG_NAME} -v ${PKG_VERSION} || exit 1
 
