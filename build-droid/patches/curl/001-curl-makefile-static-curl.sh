@@ -2,5 +2,5 @@
 
 # static link libcurl
 
-sed "s/curl_LDADD = /curl_LDADD = -static /g" src/Makefile > src/.Makefile.tmp
-mv src/.Makefile.tmp src/Makefile
+sed -i "s/curl_LDADD = /curl_LDADD = -static -fPIE -pie /g" src/Makefile
+sed -i "s/CFLAGS = /CFLAGS = -fPIE /g" src/Makefile
