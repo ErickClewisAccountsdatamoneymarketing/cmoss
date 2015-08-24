@@ -37,7 +37,8 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-zlib=${SYSROOT} --with-bzip2==${ROOTDIR}
+#call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-zlib=${SYSROOT} --with-bzip2==${ROOTDIR}
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 

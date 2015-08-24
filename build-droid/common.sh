@@ -11,7 +11,7 @@ env_setup()
 
     case $target in
         x86)
-            export PLATFORM="i686-android-linux"
+            export PLATFORM="i686-linux-android"
             export ARCH="x86"
             export TC_PLATFORM=$ARCH
             ;;
@@ -27,7 +27,7 @@ env_setup()
     esac
 
     ANDROID_API_LEVEL="14"
-    TOOLCHAIN_VERSION="4.4.3"
+    TOOLCHAIN_VERSION="4.9"
 
     local self=$(readlink -f "$0")
     export TOPDIR=$(dirname $(dirname $self))

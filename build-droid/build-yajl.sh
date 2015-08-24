@@ -38,7 +38,7 @@ cd $PKG_DIR
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
-./configure --prefix=${ROOTDIR}
+./configure --prefix=${SYSROOT}/usr
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION -t post || exit 1
 

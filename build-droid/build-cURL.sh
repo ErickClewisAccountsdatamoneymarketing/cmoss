@@ -36,8 +36,8 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-# call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-zlib=${ROOTDIR} --with-ssl=${ROOTDIR} --with-libssh2=${ROOTDIR} --with-random=/dev/urandom --disable-manual --enable-ipv6
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --without-ssl --without-libssh2 --with-random=/dev/urandom --disable-manual --enable-ipv6
+# call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --with-random=/dev/urandom --disable-manual --enable-ipv6
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --without-ssl --without-libssh2 --with-random=/dev/urandom --disable-manual --enable-ipv6
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 

@@ -39,5 +39,5 @@ cd $PKG_DIR
 ${TOPDIR}/helper/patch.sh ${PKG_NAME} -v ${PKG_VERSION} || exit 1
 
 make CC="${CC}" AR="${AR}" RANLIB="${RANLIB}" CFLAGS="${CFLAGS}"
-make install PREFIX=${ROOTDIR}  # Ignore errors due to share libraries missing
+make install PREFIX=${SYSROOT}/usr  # Ignore errors due to share libraries missing
 

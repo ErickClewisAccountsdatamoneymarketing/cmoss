@@ -39,7 +39,12 @@ cd $PKG_DIR
 LDFLAGS="$LDFLAGS -dynamiclib"
 CFLAGS="$CFLAGS -UOPENSSL_BN_ASM_PART_WORDS"
 
-call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${ROOTDIR} linux-generic32
+
+if [ ${PLATFORM#*64} = "$PLATFORM" ]; then
+    call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${SYSROOT}/usr linux-generic32
+else
+    call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${SYSROOT}/usr linux-generic64
+fi
 
 make CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
 make install

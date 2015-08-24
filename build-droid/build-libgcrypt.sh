@@ -37,7 +37,7 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --enable-shared --enable-static --with-gpg-error-prefix=${ROOTDIR}
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --enable-shared --enable-static --with-gpg-error-prefix=${SYSROOT}/usr
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 

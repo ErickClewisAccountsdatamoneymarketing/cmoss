@@ -90,12 +90,12 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 # <compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-x86/usr/include
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3/include
-<compileflags>-I${ROOTDIR}/include
+<compileflags>-i${ROOTDIR}/include
 # <linkflags>-nostdlib
 # <linkflags>-lc
 # <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
 # <linkflags>-L${SYSROOT}/usr/lib
-<linkflags>-Wl,--gc-section
+<linkflags>-Wl,--gc-sections
 # <linkflags>-L${CRYSTAX_DIR}/sources/crystax/libs/armeabi-v7a/4.4.3
 # <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
 <linkflags>-L${ROOTDIR}/lib
@@ -139,15 +139,15 @@ using android : arm : ${DROIDTOOLS}-g++ :
 # <compileflags>-I${CRYSTAX_DIR}/sources/crystax/include
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3/include
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
-<compileflags>-I${ROOTDIR}/include
+#<compileflags>-I${ROOTDIR}/include
 # <linkflags>-nostdlib
 # <linkflags>-lc
 # <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
-<linkflags>-Wl,--gc-section
+<linkflags>-Wl,--gc-sections
 # <linkflags>-L${CRYSTAX_DIR}/sources/crystax/libs/armeabi-v7a/4.4.3
 # <linkflags>-L${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/armeabi-v7a/4.4.3
 #<linkflags>-L${SYSROOT}/usr/lib
-<linkflags>-L${ROOTDIR}/lib
+#<linkflags>-L${ROOTDIR}/lib
 # Flags above are for android
 <architecture>arm
 # <compileflags>-fvisibility=hidden
@@ -166,10 +166,10 @@ EOF
     cat >> project-config.jam <<EOF
 libraries = --with-date_time --with-filesystem --with-program_options --with-regex --with-signals --with-system --with-thread --with-iostreams ;
 
-option.set prefix : ${ROOTDIR}/ ;
-option.set exec-prefix : ${ROOTDIR}/bin ;
-option.set libdir : ${ROOTDIR}/lib ;
-option.set includedir : ${ROOTDIR}/include ;
+option.set prefix : ${SYSROOT}/usr ;
+option.set exec-prefix : ${SYSROOT}/usr/bin ;
+option.set libdir : ${SYSROOT}/usr/lib ;
+option.set includedir : ${SYSROOT}/usr/include ;
 EOF
 
     touch .$PKG_NAME-configured

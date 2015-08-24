@@ -38,7 +38,8 @@ cd $PKG_DIR
 
 LDFLAGS="$LDFLAGS -lgpg-error"
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --with-libgcrypt --with-libgcrypt-prefix=${ROOTDIR} --with-libz --with-libz-prefix=${ROOTDIR} -with-openssl --with-libssl-prefix=${ROOTDIR} CFLAGS="${CFLAGS}"
+#call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --with-libgcrypt --with-libgcrypt-prefix=${ROOTDIR} --with-libz --with-libz-prefix=${ROOTDIR} -with-openssl --with-libssl-prefix=${ROOTDIR} CFLAGS="${CFLAGS}"
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --with-libgcrypt --with-libz -with-openssl CFLAGS="${CFLAGS}"
 
 make
 make install

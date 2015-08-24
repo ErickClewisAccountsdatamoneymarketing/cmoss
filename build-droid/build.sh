@@ -4,6 +4,7 @@ set -e
 # Package list
 # A simplistic way of defining dependency by ording, Makefile would be better
 packages="\
+    json \
     libevent \
     cares \
     bzip2 \
@@ -24,20 +25,17 @@ packages="\
     libjudy \
 "
 default="\
+    breakpad \
     libevent \
     bzip2 \
     expat \
     liblog4c \
-    openssl \
-    libssh2 \
     cURL \
     boost \
-    breakpad \
     libldns \
-    libgcrypt \
-    libgpg-error \
-    cares \
     libjudy \
+    json \
+    openssl \
 "
 for p in ${packages[@]}; do
     declare PKG_${p//[-.]/_}=0
@@ -96,20 +94,5 @@ for t in $targets; do
         fi
     done
 
-    test $clean && continue
-
-    mkdir -p ${BINDIR}/include
-
-    if [ $t = arm ]; then
-        cp -r ${TMPDIR}/build/droid/arm-linux-androideabi/include/ ${BINDIR}/include
-        mkdir -p ${BINDIR}/lib/device
-        cp -f ${TMPDIR}/build/droid/arm-linux-androideabi/lib/*.a ${BINDIR}/lib/device
-        cp -f ${TMPDIR}/build/droid/arm-linux-androideabi/lib/*.so ${BINDIR}/lib/device
-    elif [ $t = x86 ]; then
-        cp -r ${TMPDIR}/build/droid/arm-linux-androideabi/include/ ${BINDIR}/include
-        mkdir -p ${BINDIR}/lib/emulator
-        cp -f ${TMPDIR}/build/droid/i686-android-linux/lib/*.a ${BINDIR}/lib/emulator
-        cp -f ${TMPDIR}/build/droid/i686-android-linux/lib/*.so ${BINDIR}/lib/emulator
-    fi
 done
 

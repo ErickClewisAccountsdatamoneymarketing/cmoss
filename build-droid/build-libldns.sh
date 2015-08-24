@@ -11,10 +11,10 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-LDFLAGS="-Os -pipe -isysroot ${SYSROOT} -L${ROOTDIR}/lib"
+LDFLAGS="-Os -pipe -isysroot ${SYSROOT}"
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-gost --with-ssl=${ROOTDIR} 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${ROOTDIR} --disable-gost --disable-ecdsa --without-ssl --disable-sha2 
+#call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --disable-gost 
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --disable-gost --disable-ecdsa --without-ssl --disable-sha2 
 
 make
 make install

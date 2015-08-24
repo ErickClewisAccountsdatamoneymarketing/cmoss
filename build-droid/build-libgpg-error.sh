@@ -37,7 +37,7 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --enable-shared --enable-static --prefix=${ROOTDIR}
+call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --enable-shared --enable-static --prefix=${SYSROOT}/usr
 
 make
 make install
