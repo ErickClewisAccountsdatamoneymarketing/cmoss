@@ -1,0 +1,12 @@
+--- a/scripts/trylink     2015-10-31 10:56:33.058954158 +0800
++++ b/scripts/trylink     2015-10-31 10:56:37.930198266 +0800
+@@ -87,7 +87,8 @@
+
+ START_GROUP="-Wl,--start-group"
+ END_GROUP="-Wl,--end-group"
+-INFO_OPTS="-Wl,--warn-common -Wl,-Map,$EXE.map -Wl,--verbose"
++# INFO_OPTS="-Wl,--warn-common -Wl,-Map,$EXE.map -Wl,--verbose"
++INFO_OPTS=
+
+ # gold may not support --sort-common (yet)
+ SORT_COMMON=`check_cc "-Wl,--sort-common" ""`

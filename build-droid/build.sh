@@ -23,6 +23,7 @@ packages="\
     boost \
     breakpad \
     libjudy \
+    busybox \
 "
 default="\
     breakpad \
@@ -36,6 +37,7 @@ default="\
     libjudy \
     json \
     openssl \
+    busybox \
 "
 for p in ${packages[@]}; do
     declare PKG_${p//[-.]/_}=0
