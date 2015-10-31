@@ -46,6 +46,6 @@ LDFLAGS="$LDFLAGS -shared"
 CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=64"
 CXXFLAGS="CXXFLAGS -D_FILE_OFFSET_BITS=64"
 
-make -f Makefile.soci-core -C soci-${SOCI_VERSION}/core install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${SYSROOT}/usr" && \
+make -f Makefile.soci-core -C soci-${SOCI_VERSION}/core install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${SYSROOT}/usr"
 make -f Makefile.soci-sqlite3 -C soci-${SOCI_VERSION}/backends/sqlite3 install CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" PREFIX="${SYSROOT}/usr"
 

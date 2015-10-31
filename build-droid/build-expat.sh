@@ -38,5 +38,5 @@ cd $PKG_DIR
 
 call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr
 
-make && \
+make
 make install --ignore-errors  # Ignore errors due to share libraries missing

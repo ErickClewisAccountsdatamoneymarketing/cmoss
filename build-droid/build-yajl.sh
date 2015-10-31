@@ -42,5 +42,5 @@ ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION -t post || exit 1
 
-make && \
+make
 make install

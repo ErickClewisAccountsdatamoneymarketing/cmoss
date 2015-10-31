@@ -42,5 +42,5 @@ CXXFLAGS="$CXXFLAGS -D_FILE_OFFSET_BITS=64 -DSQLITE_HAS_CODEC"
 
 call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --disable-readline --disable-tcl --enable-tempstore=no
 
-make && \
+make
 make install
