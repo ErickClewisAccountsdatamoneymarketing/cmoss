@@ -15,6 +15,6 @@ ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
 call_configure ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr --without-expat --with-gnu-ld
 
-make
+make && \
 make install
 

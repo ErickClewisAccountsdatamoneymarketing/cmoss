@@ -15,5 +15,5 @@ cd $PKG_DIR
 test -f configure || ./autogen.sh
 call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr
 
-make
+make && \
 make install

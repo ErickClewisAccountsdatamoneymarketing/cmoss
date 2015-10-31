@@ -46,5 +46,5 @@ else
     call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${SYSROOT}/usr linux-generic64
 fi
 
-make CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
+make CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}" && \
 make install

@@ -39,5 +39,5 @@ call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSR
 
 ${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
-make
+make && \
 make install
