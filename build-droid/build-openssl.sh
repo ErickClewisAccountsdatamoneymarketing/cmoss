@@ -27,7 +27,7 @@ set -e
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PKG_NAME=openssl
-PKG_VERSION="1.0.0f"
+PKG_VERSION="1.0.2j"
 PKG_URL=http://www.openssl.org/source
 
 . `dirname $0`/common.sh
@@ -47,4 +47,4 @@ else
 fi
 
 make CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
-make install
+make install_sw
