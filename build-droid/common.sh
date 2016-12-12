@@ -77,6 +77,13 @@ env_setup()
     export LDFLAGS_CPP="-nostdlib -lc -Wl,-rpath-link=${SYSROOT}/usr/lib -L${SYSROOT}/usr/lib -L${ROOTDIR}/lib"
 }
 
+check_url() {
+    if test -z $PKG_URL;then
+        echo "Empty package url"
+        exit 1
+    fi
+}
+
 pkg_setup()
 {
     test $PKG_DIR_NAME || PKG_DIR_NAME="$PKG_NAME-$PKG_VERSION"
@@ -100,18 +107,33 @@ pkg_setup()
     if [ ! -e  $pkg_archive ]; then
         rm -rf $PKG_DIR
 
-        if test -z $PKG_URL;then
-            echo "Empty package url"
-            exit 1
-        fi
-
         case $PKG_URL_TYPE in
+        depot)
+            if ! which gclient; then
+                if ! test -e $DLDIR/depot_tools/gclient; then
+                    rm -rf $DLDIR/depot_tools
+                    git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git $DLDIR/depot_tools
+                fi
+                PATH=$DLDIR/depot_tools:$PATH
+            fi
+            rm -rf $DLDIR/depot
+            mkdir -p $DLDIR/depot
+            (
+                cd $DLDIR/depot;
+                fetch $PKG_NAME;
+                test $PKG_GIT_BRANCH && cd src && git checkout $PKG_GIT_BRANCH && gclient sync && cd ..;
+                mv src $PKG_DIR;
+            )
+            tar czf $pkg_archive -C $pkg_dir $pkg_name
+            ;;
         svn)
+            check_url
             echo URL: $PKG_URL
             svn checkout $PKG_URL $PKG_DIR
             tar czf $pkg_archive -C $pkg_dir $pkg_name
             ;;
         git)
+            check_url
             echo URL: $PKG_URL
             git clone $PKG_URL $PKG_DIR
             if test $PKG_GIT_BRANCH; then 
@@ -120,6 +142,7 @@ pkg_setup()
             tar czf $pkg_archive -C $pkg_dir $pkg_name
             ;;
         *)
+            check_url
             echo URL: $PKG_URL/$PKG_ARCHIVE
             (cd `dirname $pkg_archive`; wget "$PKG_URL/$PKG_ARCHIVE")
             tar xf $pkg_archive -C $pkg_dir
