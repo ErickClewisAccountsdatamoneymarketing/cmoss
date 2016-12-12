@@ -1,0 +1,37 @@
+--- a/config.h	2016-12-11 18:11:01.539982817 +0800
++++ b/config.h	2016-12-12 16:48:51.622484727 +0800
+@@ -11,10 +11,10 @@
+ /* #undef DISABLE_THREAD_SUPPORT */
+ 
+ /* Define to 1 if you have the `arc4random' function. */
+-#define HAVE_ARC4RANDOM 1
++/* #undef HAVE_ARC4RANDOM */
+ 
+ /* Define to 1 if you have the `arc4random_buf' function. */
+-#define HAVE_ARC4RANDOM_BUF 1
++/* #undef HAVE_ARC4RANDOM_BUF */
+ 
+ /* Define to 1 if you have the <arpa/inet.h> header file. */
+ #define HAVE_ARPA_INET_H 1
+--- a/arc4random.c	2015-01-05 23:17:40.000000000 +0800
++++ b/arc4random.c	2016-12-12 16:57:54.014305210 +0800
+@@ -462,7 +462,7 @@
+ 
+ #ifndef ARC4RANDOM_NOADDRANDOM
+ ARC4RANDOM_EXPORT void
+-arc4random_addrandom(const unsigned char *dat, int datlen)
++arc4random_addrandom(unsigned char *dat, int datlen)
+ {
+ 	int j;
+ 	_ARC4_LOCK();
+--- a/evutil_rand.c	2016-12-12 17:06:39.090059725 +0800
++++ b/evutil_rand.c	2016-12-12 17:04:44.035880336 +0800
+@@ -110,7 +110,7 @@
+ #ifdef _EVENT_ssize_t
+ #define ssize_t _EVENT_SSIZE_t
+ #endif
+-#define ARC4RANDOM_EXPORT static
++/* #define ARC4RANDOM_EXPORT static */
+ #define _ARC4_LOCK() EVLOCK_LOCK(arc4rand_lock, 0)
+ #define _ARC4_UNLOCK() EVLOCK_UNLOCK(arc4rand_lock, 0)
+ #ifndef _EVENT_DISABLE_THREAD_SUPPORT
