@@ -15,5 +15,7 @@ cd $PKG_DIR
 test -f configure || ./autogen.sh
 call_configure --host=${ARCH}-android-linux --target=${PLATFORM} --prefix=${SYSROOT}/usr
 
+${TOPDIR}/helper/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
+
 make
 make install
