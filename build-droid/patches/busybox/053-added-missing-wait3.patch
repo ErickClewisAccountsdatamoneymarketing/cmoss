@@ -1,0 +1,13 @@
+--- a/libbb/missing_syscalls.c	2016-12-12 03:08:02.825711511 +0800
++++ b/libbb/missing_syscalls.c	2016-12-12 03:12:20.216864734 +0800
+@@ -98,4 +98,10 @@
+ {
+   return syscall(__NR_semop, semid, sops, nsops);
+ }
++
++// ndk r13 don't have wait3?
++pid_t wait3(int* status, int options, struct rusage* rusage) { 
++    return wait4(-1, status, options, rusage); 
++}
++
+ #endif

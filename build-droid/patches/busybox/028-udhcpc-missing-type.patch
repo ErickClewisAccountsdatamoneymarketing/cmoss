@@ -1,0 +1,24 @@
+diff --git a/networking/udhcp/dhcpc.h b/networking/udhcp/dhcpc.h
+index 9f423a5..e044574 100644
+--- a/networking/udhcp/dhcpc.h
++++ b/networking/udhcp/dhcpc.h
+@@ -38,4 +38,19 @@ struct client_config_t {
+ 
+ POP_SAVED_FUNCTION_VISIBILITY
+ 
++#ifndef PACKET_AUXDATA
++#define PACKET_AUXDATA 8
++
++struct tpacket_auxdata
++{
++    uint32_t    tp_status;
++    uint32_t    tp_len;
++    uint32_t    tp_snaplen;
++    uint16_t    tp_mac;
++    uint16_t    tp_net;
++    uint16_t    tp_vlan_tci;
++    uint16_t    tp_padding;
++};
++#endif
++
+ #endif

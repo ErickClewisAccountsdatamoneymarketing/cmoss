@@ -1,0 +1,118 @@
+--- a/libbb/semctl.c	2016-12-12 04:49:14.894124303 +0800
++++ b/libbb/semctl.c	2016-12-12 04:49:11.438184625 +0800
+@@ -26,6 +26,9 @@
+ #include <stdarg.h>
+ #include <linux/sem.h>
+ #include "libbb.h"
++#if defined(__i386__)
++# include <asm-generic/ipc.h>
++#endif /* __i386__ */
+ 
+ /* code from GLIBC */
+ int semctl(int semid, int semnum, int cmd, ...) {
+@@ -54,5 +57,9 @@
+ 
+   va_end (ap);
+ 
++#if defined(__i386__)
++  return syscall(__NR_ipc, SEMCTL, semid, semnum, cmd | 0x0100, arg.buf);
++#else
+   return syscall(__NR_semctl, semid, semnum, cmd, arg);
++#endif
+ }
+--- a/libbb/missing_syscalls.c	2016-12-12 04:49:02.178346239 +0800
++++ b/libbb/missing_syscalls.c	2016-12-12 04:48:55.322465888 +0800
+@@ -11,6 +11,11 @@
+ #include "libbb.h"
+ 
+ #if defined(ANDROID) || defined(__ANDROID__)
++
++#if defined(__i386__)
++# include <asm-generic/ipc.h>
++#endif /* __i386__ */
++
+ pid_t getsid(pid_t pid)
+ {
+ 	return syscall(__NR_getsid, pid);
+@@ -52,27 +57,47 @@
+ 
+ int shmget(key_t key, size_t size, int shmflg)
+ {
++#if defined(__i386__)
++  return syscall(__NR_ipc, SHMGET, key, size, shmflg,0,NULL);
++#else
+   return syscall(__NR_shmget, key, size, shmflg);
++#endif
+ }
+ 
+ int shmdt(const void *shmaddr)
+ {
++#if defined(__i386__)
++  return syscall(__NR_ipc, SHMDT, 0, shmaddr);
++#else
+   return syscall(__NR_shmdt, shmaddr);
++#endif
+ }
+ 
+ void *shmat(int shmid, const void *shmaddr, int shmflg)
+ {
++#if defined(__i386__)
++  return (void *)syscall(__NR_ipc, SHMAT, shmid, shmflg, 0, shmaddr);
++#else
+   return (void *)syscall(__NR_shmat, shmid, shmaddr, shmflg);
++#endif
+ }
+ 
+ int msgget(key_t key, int msgflg)
+ {
++#if defined(__i386__)
++  return syscall(__NR_ipc, MSGGET, key, msgflg, 0, NULL);
++#else
+   return syscall(__NR_msgget, key, msgflg);
++#endif
+ }
+ 
+ int semget(key_t key, int nsems, int semflg)
+ {
++#if defined(__i386__)
++  return (void *)syscall(__NR_ipc, SEMGET, key, nsems, semflg);
++#else
+   return syscall(__NR_semget, key, nsems, semflg);
++#endif
+ }
+ 
+ ssize_t readahead(int fd, off64_t offset, size_t count)
+@@ -83,20 +108,33 @@
+ struct msqid_ds; /* #include <linux/msg.h> */
+ int msgctl(int msqid, int cmd, struct msqid_ds *buf)
+ {
++#if defined(__i386__)
++  /* Android defines |struct ipc_perm| as old ABI. */
++  return syscall(__NR_ipc, MSGCTL, msqid, cmd | 0x0100, 0, buf);
++#else
+   return syscall(__NR_msgctl, msqid, cmd, buf);
++#endif
+ }
+ 
+ struct shmid_ds; /* #include <linux/shm.h> */
+ // NOTE: IPC_INFO takes a struct shminfo64
+ int shmctl(int shmid, int cmd, struct shmid_ds *buf)
+ {
++#if defined(__i386__)
++  return syscall(__NR_ipc, SHMCTL, shmid, cmd | 0x0100, 0, buf);
++#else
+   return syscall(__NR_shmctl, shmid, cmd, buf);
++#endif
+ }
+ 
+ struct sembuf; /* #include <linux/sem.h> */
+ int semop(int semid, struct sembuf *sops, unsigned nsops)
+ {
++#if defined(__i386__)
++  return syscall(__NR_ipc, SEMOP, semid, nsops, 0, sops);
++#else
+   return syscall(__NR_semop, semid, sops, nsops);
++#endif
+ }
+ 
+ // ndk r13 don't have wait3?
