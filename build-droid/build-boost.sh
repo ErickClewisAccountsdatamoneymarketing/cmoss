@@ -30,7 +30,7 @@ PKG_NAME=boost
 PKG_VERSION=1.48.0
 PKG_DIR_NAME=boost_${PKG_VERSION//./_}
 PKG_ARCHIVE=$PKG_DIR_NAME.tar.bz2
-PKG_URL=http://surfnet.dl.sourceforge.net/project/boost/boost/$PKG_VERSION
+PKG_URL=http://downloads.sourceforge.net/project/boost/boost/$PKG_VERSION
 
 . `dirname $0`/common.sh
 env_setup $@
@@ -90,7 +90,7 @@ using android : i686 : ${DROIDTOOLS}-g++ :
 # <compileflags>-I${CRYSTAX_DIR}/platforms/android-14/arch-x86/usr/include
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/include/4.4.3
 # <compileflags>-I${CRYSTAX_DIR}/sources/cxx-stl/gnu-libstdc++/libs/x86/4.4.3/include
-<compileflags>-i${ROOTDIR}/include
+<compileflags>-I${ROOTDIR}/include
 # <linkflags>-nostdlib
 # <linkflags>-lc
 # <linkflags>-Wl,-rpath-link=${SYSROOT}/usr/lib
