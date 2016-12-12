@@ -1,0 +1,11 @@
+--- a/src/common/memory.h	2016-12-12 01:55:39.816678993 +0800
++++ b/src/common/memory.h	2016-12-12 16:54:49.525144702 +0800
+@@ -171,7 +171,7 @@
+ 
+   template <class Other> PageStdAllocator(const PageStdAllocator<Other>& other)
+       : allocator_(other.allocator_),
+-        stackdata_(nullptr),
++        stackdata_(NULL),
+         stackdata_size_(0)
+   {}
+ 

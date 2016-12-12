@@ -1,0 +1,22 @@
+--- a/src/common/android/include/sys/user.h	2016-12-12 18:18:14.626192938 +0800
++++ b/src/common/android/include/sys/user.h	2016-12-12 18:14:13.610529808 +0800
+@@ -54,7 +54,7 @@
+ #ifdef __cplusplus
+ extern "C" {
+ #endif  // __cplusplus
+-typedef struct user_fxsr_struct user_fpxregs_struct;
++// typedef struct user_fxsr_struct user_fpxregs_struct;
+ #ifdef __cplusplus
+ }  // extern "C"
+ #endif  // __cplusplus
+--- a/src/client/linux/dump_writer_common/thread_info.h	2016-12-12 18:23:04.058030351 +0800
++++ b/src/client/linux/dump_writer_common/thread_info.h	2016-12-12 18:22:34.190473509 +0800
+@@ -57,7 +57,7 @@
+   static const unsigned kNumDebugRegisters = 8;
+   debugreg_t dregs[8];
+ #if defined(__i386)
+-  user_fpxregs_struct fpxregs;
++  user_fxsr_struct fpxregs;
+ #endif  // defined(__i386)
+ 
+ #elif defined(__ARM_EABI__)
