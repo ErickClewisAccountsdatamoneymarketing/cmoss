@@ -1,0 +1,13 @@
+--- a/Makefile.in	2007-09-24 12:15:17.000000000 -0700
++++ b/Makefile.in	2017-02-03 09:42:57.000000000 -0800
+@@ -210,8 +210,8 @@
+ top_srcdir = @top_srcdir@
+ @DOC_TRUE@DOC_SUBDIR = doc
+ @TEST_TRUE@TEST_SUBDIR = tests
+-SUBDIRS = config src ${DOC_SUBDIR} ${TEST_SUBDIR} examples
+-DIST_SUBDIRS = config src doc tests examples
++SUBDIRS = config src
++DIST_SUBDIRS = config src
+ EXTRA_DIST = \
+ 	log4c.m4 \
+ 	log4c.spec.in \

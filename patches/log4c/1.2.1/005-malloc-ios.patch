@@ -1,0 +1,18 @@
+--- a/src/sd/malloc.c	2017-02-02 09:33:19.000000000 -0800
++++ b/src/sd/malloc.c.new	2017-02-02 09:33:17.000000000 -0800
+@@ -31,9 +31,12 @@
+ #include <sd/error.h>
+ 
+ #if defined(__APPLE__)
+-# include <sys/time.h>
+-# include <crt_externs.h>
+-# define environ (*_NSGetEnviron())
++#   include "TargetConditionals.h"
++#   if !defined(TARGET_OS_IPHONE) && !defined(TARGET_IPHONE_SIMULATOR)
++#       include <sys/time.h>
++#       include <crt_externs.h>
++#       define environ (*_NSGetEnviron())
++#   endif
+ #endif /* __APPLE__ */
+ 
+ typedef void (*sd_malloc_handler_t)();

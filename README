@@ -1,50 +1,80 @@
-The CMOSS scripts can be used to build the following C/C++ Open Source Software libraries for native development on iOS and Android.
+Cross Compiling Scripts for both Android and iOS
 
-* c-ares : http://c-ares.haxx.se
-* bzip2 : http://bzip.org/
-* GnuPG 1.4.x, Libgcrypt, Libgpg-error : http://www.gnupg.org/
-* OpenSSL - http://http://www.openssl.org/
-* libSSH2 - http://www.libssh2.org/
-* cURL - http://curl.haxx.se/
-* expat - http://expat.sourceforge.net/
-* yajl - http://lloyd.github.com/yajl/
-* sqlcipher - http://sqlcipher.net/
-* soci - http://soci.sourceforge.net/
-* boost - http://www.boost.org/
+Originally forked from https://github.com/mevansam/cmoss, it has seens been
+rewritten almost entirely.
 
-The android kernel already provides some of these shared libraries so check if they are available before including them in your NDK project.
+Tested libraries/program build for Android ndk r13 on Ubuntu 14.04
 
-The scripts will download the source code from the internet and build them locally. So your build machine needs to be connected to the internet when building. Once the source code archives have been downloaded they will be saved in the [cmoss root path]/tmp folder and will not be downloaded again unless you delete them or change the version. The builds have been tested with the versions hard-coded in the script files. If you change these versions it is possible the build for that library may break. If you do find a new version that breaks a build please let me know so it can be fixed.
+* breakpad 
+* libevent 
+* bzip2 
+* expat 
+* liblog4c 
+* cURL 
+* boost 
+* libldns 
+* libjudy 
+* json 
+* openssl 
+* busybox 
 
-To run iOS build:
+Android build prerequesites:
 
-cd [cmoss root path]/build-ios
-./build-all.sh [installed sdk version #] [proxy_host:proxy_port]
+    git, build-essentials, NDK (r13 tested)
 
-(scripts were tested with SDK 4.3)
+Either define envrinonment variable ANDROID_NDK pointing to your NDK location,
+or put a symlink named build-droid/android-ndk under this directory.
 
-To run Android build:
 
-cd [cmoss root path]/build-ios
-./build-all.sh [path to Android NDK] [proxy_host:proxy_port]
+Tested libraries build for iOS using MacOSX 10.12, XCode 8.2
 
-(scripts were tested with Android NDK r7)
+* libevent 
+* liblog4c 
+* cURL 
+* boost 
+* libldns 
+* libjudy 
+* json 
 
-These build scripts were tested on a Mac OS X 10 with the following Mac ports:
+MacOSX Prerequesite:
 
-  cmake @2.8.4_0 (active)
-  cppunit @1.12.1_0 (active)
-  dos2unix @5.1.1_0 (active)
-  expat @2.0.1_1 (active)
-  gettext @0.18.1.1_2 (active)
-  gperf @3.0.4_0 (active)
-  libiconv @1.13.1_0 (active)
-  libidn @1.20_0 (active)
-  ncurses @5.8_0
-  ncurses @5.8_1 (active)
-  ncursesw @5.8_0 (active)
-  openssl @1.0.0d_0 (active)
-  wget @1.12_3+ssl (active)
-  zlib @1.2.5_0 (active)
+* Install command line tools:
+    xcode-select install
 
-The Android scripts should work in a Linux environment but have not been tested.
+* Install homebrew
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+    brew install automake libtool
+
+To build the above libraries, simply
+    ./build.sh default
+
+depending on your system, it will build android arm, and iOS 9 arm7v and arm64
+target. The results is located at tmp/build/<mac|droid>/<target>. E.g.
+
+    tmp/build/droid/arm-android-linux/usr/<include|lib|src>
+    tmp/build/mac/iPhoneOS/armv7/<include|lib|src>
+
+For Mac, each architecture is separate. No attemp to lipo together a fat
+archive yet.
+
+To build x86 android target,
+    ./build.sh default i686
+
+for iOS simulator
+    ./build.sh default sim
+
+for MacOSX native,
+    ./build.sh default mac
+
+Build individual library, use the library name shown in above list
+    ./build.sh <library name>
+
+To rebuild a library, manually delete the corresponding library source code
+directory in the aboive mentioned src directory, e.g.
+    tmp/build/mac/iPhoneOS/armv7/src/boost_1_58_0
+
+Downloaded source code archive is in dl directory.
+
+
+
