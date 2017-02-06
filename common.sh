@@ -132,7 +132,7 @@ env_setup_mac()
             ;;
         MacOS)
 		    export PLATFORM="MacOSX"
-            export ARCH_FAT=($host_arch)
+            export ARCH_FAT=(i386 x86_64)
             export CONFIG_FLAGS="--host=$host_arch-apple-darwin"
             ;;
         *)
@@ -177,11 +177,13 @@ env_setup_mac()
     # export CXXCPP=${MACTOOLS}/cpp
     export RANLIB=${MACTOOLS}/ranlib
     export LDFLAGS="-Os -arch $ARCH -Wl,-dead_strip ${MIN_VERSION} -L${ROOTDIR}/lib"
-    export CFLAGS="-Os -arch $ARCH -pipe -no-cpp-precomp ${MIN_VERSION} -isysroot ${SDKROOT} -I${ROOTDIR}/include -g ${BIGFILES}"
+    export CFLAGS="-Os -arch $ARCH -pipe -no-cpp-precomp ${MIN_VERSION} -isysroot ${SDKROOT} -I${ROOTDIR}/include -g ${BIGFILES} -Wno-error=implicit-function-declaration"
     export CXXFLAGS="${CFLAGS}"
     export CPPFLAGS="${CFLAGS}"
 
     CONFIG_FLAGS="$CONFIG_FLAGS --build=$host_arch-apple-darwin --prefix=$PREFIX"
+
+    cp -n $DEVELOPER/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/{crt_externs,bzlib}.h $ROOTDIR/include || true
 }
 
 check_url() {

@@ -49,6 +49,7 @@ default_mac="\
     libldns \
     libjudy \
     json \
+    expat \
 "
 target_mac=ios9
 
@@ -115,7 +116,6 @@ for t in $targets; do
     ARCH_COUNT=0
     export ARCH_IDX=0
     env_setup $t
-    mkdir -p $LOGPATH
 
     for p in $packages; do
         var=PKG_${p//[-.]/_}
@@ -123,6 +123,8 @@ for t in $targets; do
 
         ARCH_IDX=0
         while ((ARCH_IDX<ARCH_COUNT)); do
+            env_setup $t
+            mkdir -p $LOGPATH
             $base_path/build-$p.sh $t $clean 2>&1 | tee $LOGPATH/$p.log
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
                 echo failed

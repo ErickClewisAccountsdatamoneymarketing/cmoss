@@ -38,5 +38,5 @@ cd $PKG_DIR
 
 call_configure ${CONFIG_FLAGS}
 
-make
+make $MAKE_FLAGS
 make install --ignore-errors  # Ignore errors due to share libraries missing
