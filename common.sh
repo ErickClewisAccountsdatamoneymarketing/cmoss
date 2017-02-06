@@ -122,18 +122,18 @@ env_setup_mac()
         iPhoneSimulator)
 		    export PLATFORM="iPhoneSimulator"
             export ARCH_FAT=(i386 x86_64)
-            export CONFIG_FLAGS="--host=i386-apple-darwin --prefix=${PREFIX}"
+            export CONFIG_FLAGS="--host=i386-apple-darwin"
             ;;
         iPhoneOS*)
             MIN_VERSION="-miphoneos-version-min=7.0"
 		    export PLATFORM="iPhoneOS"
             export ARCH_FAT=(armv7 arm64)
-            export CONFIG_FLAGS="--host=arm-apple-darwin --prefix=${PREFIX}"
+            export CONFIG_FLAGS="--host=arm-apple-darwin"
             ;;
         MacOS)
 		    export PLATFORM="MacOSX"
             export ARCH_FAT=($host_arch)
-            export CONFIG_FLAGS="--host=$host_arch-apple-darwin --prefix=${PREFIX}"
+            export CONFIG_FLAGS="--host=$host_arch-apple-darwin"
             ;;
         *)
             echo "Unknown platform: $platform">&2
@@ -147,7 +147,6 @@ env_setup_mac()
     else
         export ARCH=${ARCH_FAT[0]}
     fi
-    CONFIG_FLAGS="$CONFIG_FLAGS --build=$host_arch-apple-darwin"
 
     export DEVELOPER=`xcode-select --print-path`
     export TOPDIR=$PWD
@@ -181,6 +180,8 @@ env_setup_mac()
     export CFLAGS="-Os -arch $ARCH -pipe -no-cpp-precomp ${MIN_VERSION} -isysroot ${SDKROOT} -I${ROOTDIR}/include -g ${BIGFILES}"
     export CXXFLAGS="${CFLAGS}"
     export CPPFLAGS="${CFLAGS}"
+
+    CONFIG_FLAGS="$CONFIG_FLAGS --build=$host_arch-apple-darwin --prefix=$PREFIX"
 }
 
 check_url() {

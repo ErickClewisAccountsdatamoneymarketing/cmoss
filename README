@@ -1,6 +1,6 @@
 Cross Compiling Scripts for both Android and iOS
 
-Originally forked from https://github.com/mevansam/cmoss, it has seens been
+Originally forked from https://github.com/mevansam/cmoss, it has since been
 rewritten almost entirely.
 
 Tested libraries/program build for Android ndk r13 on Ubuntu 14.04
