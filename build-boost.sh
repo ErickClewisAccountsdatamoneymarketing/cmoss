@@ -151,6 +151,8 @@ EOF
         EXTRA_TVOS_FLAGS="$EXTRA_FLAGS -mtvos-version-min=$MIN_TVOS_VERSION"
         EXTRA_OSX_FLAGS="$EXTRA_FLAGS -mmacosx-version-min=$MIN_OSX_VERSION"
 
+        case "$PLATFORM" in
+        iPhoneOS)
         cat > tools/build/src/user-config.jam <<EOF
 using darwin : ios 
 : $CXX -arch $ARCH $EXTRA_IOS_FLAGS -D_LITTLE_ENDIAN
@@ -159,6 +161,10 @@ using darwin : ios
 <linkflags>-L${PREFIX}/lib
 <compileflags>-I${PREFIX}/include
 ;
+EOF
+        ;;
+        iPhoneSimulator)
+        cat > tools/build/src/user-config.jam <<EOF
 using darwin : iosim   
 : $CXX -arch $ARCH $EXTRA_IOS_FLAGS
 : <striper> 
@@ -166,18 +172,10 @@ using darwin : iosim
 <linkflags>-L${PREFIX}/lib
 <compileflags>-I${PREFIX}/include
 ;
-using darwin : itv 
-: $CXX -arch $ARCH $EXTRA_TVOS_FLAGS -D_LITTLE_ENDIAN -I${DEVELOPER}/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS${TVOS_SDK_VERSION}.sdk/usr/include
-<linkflags>-L${PREFIX}/lib
-<compileflags>-I${PREFIX}/include
-: <striper> <root>$DEVELOPER/Platforms/AppleTVOS.platform/Developer
-;
-using darwin : itvsim 
-: $CXX -arch $ARCH $EXTRA_TVOS_FLAGS -I${DEVELOPER}/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator${TVOS_SDK_VERSION}.sdk/usr/include
-: <striper> <root>$DEVELOPER/Platforms/AppleTVSimulator.platform/Developer
-<linkflags>-L${PREFIX}/lib
-<compileflags>-I${PREFIX}/include
-;
+EOF
+        ;;
+        MacOSX)
+        cat > tools/build/src/user-config.jam <<EOF
 using darwin : osx 
 : $CXX -arch $ARCH $EXTRA_OSX_FLAGS
 : <striper> 
@@ -186,12 +184,12 @@ using darwin : osx
 <compileflags>-I${PREFIX}/include
 ;
 EOF
+        esac
     esac
 
     cat > project-config.jam <<EOF
 libraries = --with-date_time --with-filesystem --with-program_options --with-regex --with-signals --with-system --with-thread --with-iostreams ;
 EOF
-    
 
     touch .$PKG_NAME-configured
 fi
