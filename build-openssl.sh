@@ -36,15 +36,22 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-LDFLAGS="$LDFLAGS -dynamiclib"
-CFLAGS="$CFLAGS -UOPENSSL_BN_ASM_PART_WORDS"
-
-
-if [ ${PLATFORM#*64} = "$PLATFORM" ]; then
-    call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${PREFIX} linux-generic32
+if [ `uname -s` = Darwin ]; then
+    if [ ${ARCH/64} = $ARCH ]; then
+        call_configure --openssldir=${PREFIX} BSD-generic32 
+    else
+        call_configure --openssldir=${PREFIX} BSD-generic64 
+    fi
 else
-    call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${PREFIX} linux-generic64
+    LDFLAGS="$LDFLAGS -dynamiclib"
+    CFLAGS="$CFLAGS -UOPENSSL_BN_ASM_PART_WORDS"
+
+    if [ ${PLATFORM#*64} = "$PLATFORM" ]; then
+        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${PREFIX} linux-generic32
+    else
+        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${PREFIX} linux-generic64
+    fi
 fi
 
-make CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
+make ${MAKE_FLAGS} CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
 make install_sw
