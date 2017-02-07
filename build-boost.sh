@@ -42,6 +42,9 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
+# Apply patches to boost
+${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION -t preconfig
+
 # Build
 
 # ---------
@@ -136,7 +139,7 @@ EOF
         ;;
 
     *)
-        MIN_IOS_VERSION=8.0
+        MIN_IOS_VERSION=7.0
         # IOS_SDK_VERSION=`xcrun --sdk iphoneos --show-sdk-version`
 
         MIN_TVOS_VERSION=9.2
@@ -145,8 +148,11 @@ EOF
         MIN_OSX_VERSION=10.10
         # OSX_SDK_VERSION=`xcrun --sdk macosx --show-sdk-version`
 
+        ENABLE_BITCODE=
+        # ENABLE_BITCODE="-fembed-bitcode"
+
         EXTRA_FLAGS="-DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS -g -DNDEBUG \
--fvisibility=hidden -fvisibility-inlines-hidden -Wno-unused-local-typedef -fembed-bitcode"
+-fvisibility=hidden -fvisibility-inlines-hidden -Wno-unused-local-typedef $ENABLE_BITCODE"
         EXTRA_IOS_FLAGS="$EXTRA_FLAGS -mios-version-min=$MIN_IOS_VERSION"
         EXTRA_TVOS_FLAGS="$EXTRA_FLAGS -mtvos-version-min=$MIN_TVOS_VERSION"
         EXTRA_OSX_FLAGS="$EXTRA_FLAGS -mmacosx-version-min=$MIN_OSX_VERSION"

@@ -1,0 +1,22 @@
+--- a/tools/build/src/tools/clang-darwin.jam	2015-04-04 10:25:07.000000000 -0700
++++ b/tools/build/src/tools/clang-darwin.jam	2017-02-07 02:38:20.000000000 -0800
+@@ -83,7 +83,7 @@
+ 
+ toolset.flags clang-darwin.compile OPTIONS <inlining>off  : -fno-inline ;
+ toolset.flags clang-darwin.compile OPTIONS <inlining>on   : -Wno-inline ;
+-toolset.flags clang-darwin.compile OPTIONS <inlining>full : -finline-functions -Wno-inline ;
++toolset.flags clang-darwin.compile OPTIONS <inlining>full : -Wno-inline ;
+ 
+ toolset.flags clang-darwin.compile OPTIONS <warnings>off : -w ;
+ toolset.flags clang-darwin.compile OPTIONS <warnings>on  : -Wall ;
+--- a/tools/build/src/tools/gcc.jam	2017-02-07 03:24:00.000000000 -0800
++++ b/tools/build/src/tools/gcc.jam	2017-02-07 03:24:09.000000000 -0800
+@@ -372,7 +372,7 @@
+ 
+ toolset.flags gcc.compile OPTIONS <inlining>off  : -fno-inline ;
+ toolset.flags gcc.compile OPTIONS <inlining>on   : -Wno-inline ;
+-toolset.flags gcc.compile OPTIONS <inlining>full : -finline-functions -Wno-inline ;
++toolset.flags gcc.compile OPTIONS <inlining>full : -Wno-inline ;
+ 
+ toolset.flags gcc.compile OPTIONS <warnings>off : -w ;
+ toolset.flags gcc.compile OPTIONS <warnings>on  : -Wall ;

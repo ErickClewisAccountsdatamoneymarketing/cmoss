@@ -5,6 +5,7 @@ set -e
 # A simplistic way of defining dependency by ording, Makefile would be better
 packages="\
     json \
+    libuv \
     libevent \
     cares \
     bzip2 \
@@ -38,6 +39,7 @@ default_linux="\
     json \
     openssl \
     busybox \
+    libuv \
 "
 target_linux=arm
 
@@ -50,6 +52,8 @@ default_mac="\
     libjudy \
     json \
     expat \
+    openssl \
+    libuv \
 "
 target_mac=ios9
 

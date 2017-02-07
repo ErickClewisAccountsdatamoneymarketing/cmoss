@@ -35,6 +35,9 @@ Tested libraries build for iOS using MacOSX 10.12, XCode 8.2
 * libldns 
 * libjudy 
 * json 
+* expat
+* openssl
+* libuv
 
 MacOSX Prerequesite:
 

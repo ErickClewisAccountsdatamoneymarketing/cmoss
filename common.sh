@@ -162,7 +162,7 @@ env_setup_mac()
     mkdir -p "${ROOTDIR}/lib"
     mkdir -p $DLDIR
 
-    BIGFILES=-D_FILE_OFFSET_BITS=64
+    BIGFILES="-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE"
     export DEVROOT="${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer"
     export SDKROOT="${DEVROOT}/SDKs/${PLATFORM}.sdk"
     export MACTOOLS="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin"
