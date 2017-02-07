@@ -1,6 +1,5 @@
-diff -ru log4c-1.2.1/src/log4c/category.c log4c-1.2.1-patched/src/log4c/category.c
---- log4c-1.2.1/src/log4c/category.c	2007-09-25 03:12:16.000000000 +0800
-+++ log4c-1.2.1-patched/src/log4c/category.c	2011-08-12 01:33:57.000000000 +0800
+--- a/src/log4c/category.c	2007-09-25 03:12:16.000000000 +0800
++++ b/src/log4c/category.c	2011-08-12 01:33:57.000000000 +0800
 @@ -287,3 +287,11 @@
    return a_string;
  }
@@ -13,9 +12,8 @@ diff -ru log4c-1.2.1/src/log4c/category.c log4c-1.2.1-patched/src/log4c/category
 +    const log4c_location_info_t locinfo = LOG4C_LOCATION_INFO_INITIALIZER(NULL);
 +    __log4c_category_vlog(a_category, &locinfo, a_priority, a_format, a_args);
 +}
-diff -ruN log4c-1.2.1/src/log4c-api.h log4c-1.2.1-patched/src/log4c-api.h
---- log4c-1.2.1/src/log4c-api.h	1970-01-01 08:00:00.000000000 +0800
-+++ log4c-1.2.1-patched/src/log4c-api.h	2011-08-12 01:33:57.000000000 +0800
+--- a//src/log4c-api.h	1970-01-01 08:00:00.000000000 +0800
++++ b//src/log4c-api.h	2011-08-12 01:33:57.000000000 +0800
 @@ -0,0 +1,67 @@
 +/* $Id$
 + *
@@ -84,9 +82,8 @@ diff -ruN log4c-1.2.1/src/log4c-api.h log4c-1.2.1-patched/src/log4c-api.h
 +#endif //_log4c_api_h
 +
 +
-diff -ruN log4c-1.2.1/src/log4c-wrapper.h log4c-1.2.1-patched/src/log4c-wrapper.h
---- log4c-1.2.1/src/log4c-wrapper.h	1970-01-01 08:00:00.000000000 +0800
-+++ log4c-1.2.1-patched/src/log4c-wrapper.h	2011-08-12 01:33:57.000000000 +0800
+--- a//src/log4c-wrapper.h	1970-01-01 08:00:00.000000000 +0800
++++ b//src/log4c-wrapper.h	2011-08-12 01:33:57.000000000 +0800
 @@ -0,0 +1,56 @@
 +
 +
@@ -144,9 +141,8 @@ diff -ruN log4c-1.2.1/src/log4c-wrapper.h log4c-1.2.1-patched/src/log4c-wrapper.
 +}; //extern "C"
 +#endif
 +
-diff -ruN log4c-1.2.1/src/Makefile.am log4c-1.2.1-patched/src/Makefile.am
---- log4c-1.2.1/src/Makefile.am	2007-09-25 03:12:16.000000000 +0800
-+++ log4c-1.2.1-patched/src/Makefile.am	2011-08-12 01:33:57.000000000 +0800
+--- a//src/Makefile.am	2007-09-25 03:12:16.000000000 +0800
++++ b//src/Makefile.am	2011-08-12 01:33:57.000000000 +0800
 @@ -1,4 +1,7 @@
  SUBDIRS = sd log4c
  
@@ -157,9 +153,8 @@ diff -ruN log4c-1.2.1/src/Makefile.am log4c-1.2.1-patched/src/Makefile.am
 +	log4c-api.h \
 +	log4c-wrapper.h
 +
-diff -ruN log4c-1.2.1/src/Makefile.in log4c-1.2.1-patched/src/Makefile.in
---- log4c-1.2.1/src/Makefile.in	2007-09-25 03:15:18.000000000 +0800
-+++ log4c-1.2.1-patched/src/Makefile.in	2011-08-12 01:33:57.000000000 +0800
+--- a//src/Makefile.in	2007-09-25 03:15:18.000000000 +0800
++++ b//src/Makefile.in	2011-08-12 01:33:57.000000000 +0800
 @@ -191,7 +191,9 @@
  top_srcdir = @top_srcdir@
  SUBDIRS = sd log4c
