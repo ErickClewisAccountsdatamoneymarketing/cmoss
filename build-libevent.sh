@@ -2,10 +2,10 @@
 set -e
 
 PKG_NAME="libevent"
-PKG_VERSION="2.0.22-stable"
-PKG_ARCHIVE=release-$PKG_VERSION.tar.gz
-PKG_DIR_NAME=Libevent-release-$PKG_VERSION
-PKG_URL=https://github.com/nmathewson/Libevent/archive
+PKG_VERSION="2.1.8-stable"
+PKG_ARCHIVE=$PKG_NAME-$PKG_VERSION.tar.gz
+PKG_DIR_NAME=$PKG_NAME-$PKG_VERSION
+PKG_URL=https://github.com/libevent/libevent/releases/download/release-$PKG_VERSION
 
 . `dirname $0`/common.sh
 env_setup $@
@@ -18,4 +18,4 @@ call_configure ${CONFIG_FLAGS}
 ${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
 make ${MAKE_FLAGS}
-make install
+make install-exec

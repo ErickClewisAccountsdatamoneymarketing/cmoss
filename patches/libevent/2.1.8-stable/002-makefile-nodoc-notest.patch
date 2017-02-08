@@ -1,0 +1,11 @@
+--- a/Makefile	2017-02-07 19:01:06.000000000 -0800
++++ b/Makefile	2017-02-07 19:02:14.000000000 -0800
+@@ -2542,7 +2542,7 @@
+ 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
+ check: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) check-am
+-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) $(DATA) \
++all-am: Makefile $(LTLIBRARIES) $(SCRIPTS) \
+ 		$(HEADERS) config.h evconfig-private.h
+ installdirs:
+ 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgconfigdir)" "$(DESTDIR)$(includedir)" "$(DESTDIR)$(include_event2dir)" "$(DESTDIR)$(include_event2dir)"; do \
