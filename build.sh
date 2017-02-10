@@ -24,6 +24,7 @@ packages="\
     boost \
     breakpad \
     libjudy \
+    libarchive \
     busybox \
 "
 default_linux="\
@@ -40,6 +41,7 @@ default_linux="\
     openssl \
     busybox \
     libuv \
+    libarchive \
 "
 target_linux=arm
 
@@ -54,6 +56,7 @@ default_mac="\
     expat \
     openssl \
     libuv \
+    libarchive \
 "
 target_mac=ios9
 
