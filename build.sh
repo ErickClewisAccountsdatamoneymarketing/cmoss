@@ -84,6 +84,7 @@ base_path=`dirname $0`
 
 targets=
 clean=
+shared=
 for arg in "$@" ; do
     case $arg in
         ios*|mac|sim|x86|arm)
@@ -96,6 +97,9 @@ for arg in "$@" ; do
             for p in $packages; do
                 declare PKG_${p//[-.]/_}=1
             done
+            ;;
+        shared)
+            shared=1
             ;;
         default)
             for p in ${!default}; do
@@ -144,6 +148,11 @@ for t in $targets; do
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
                 echo failed
                 exit 1
+            fi
+            
+            if test -z $shared; then
+                echo removing shared library
+                (cd $PREFIX/lib;rm -f *.la *.so *.dylib)
             fi
             ARCH_IDX=$((ARCH_IDX+1))
         done

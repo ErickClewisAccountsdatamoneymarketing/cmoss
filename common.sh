@@ -122,16 +122,16 @@ env_setup_mac()
     case $platform in
         iPhoneSimulator)
 		    export PLATFORM="iPhoneSimulator"
-            export ARCH_FAT="i386 x86_64"
+            archs="i386 x86_64"
             ;;
         iPhoneOS)
             MIN_VERSION="-miphoneos-version-min=8.0"
 		    export PLATFORM="iPhoneOS"
-            export ARCH_FAT="armv7 arm64"
+            archs="armv7 arm64"
             ;;
         MacOS)
 		    export PLATFORM="MacOSX"
-            export ARCH_FAT="i386 x86_64"
+            archs="i386 x86_64"
             ;;
         *)
             echo "Unknown platform: $platform">&2
@@ -139,13 +139,9 @@ env_setup_mac()
             ;;
     esac
 
-    arch_fat=($ARCH_FAT)
+    arch_fat=($archs)
     export ARCH_COUNT=${#arch_fat[@]}
-    if test $ARCH_IDX; then
-        export ARCH=${arch_fat[$ARCH_IDX]}
-    else
-        export ARCH=${arch_fat[0]}
-    fi
+    export ARCH=${arch_fat[${ARCH_IDX:-0}]}
 
     export DEVELOPER=`xcode-select --print-path`
     export TOPDIR=$PWD
@@ -180,7 +176,9 @@ env_setup_mac()
     export CXXFLAGS="${CFLAGS}"
     export CPPFLAGS="${CFLAGS}"
 
-    CONFIG_FLAGS="--build=$host_arch-apple-darwin --host=$ARCH-apple-darwin --prefix=$PREFIX"
+    config_arch=$ARCH
+    [ $ARCH = arm64 ] && config_arch=aarch64
+    CONFIG_FLAGS="--build=$host_arch-apple-darwin --host=$config_arch-apple-darwin --prefix=$PREFIX"
 
     cp -n $DEVELOPER/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/{crt_externs,bzlib}.h $ROOTDIR/include || true
 }
