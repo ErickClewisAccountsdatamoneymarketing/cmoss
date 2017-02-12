@@ -139,7 +139,7 @@ EOF
         ;;
 
     *)
-        MIN_IOS_VERSION=7.0
+        MIN_IOS_VERSION=8.0
         # IOS_SDK_VERSION=`xcrun --sdk iphoneos --show-sdk-version`
 
         MIN_TVOS_VERSION=9.2

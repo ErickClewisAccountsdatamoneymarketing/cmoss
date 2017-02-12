@@ -4,6 +4,7 @@ set -e
 # Package list
 # A simplistic way of defining dependency by ording, Makefile would be better
 packages="\
+    openssl \
     json \
     libuv \
     libevent \
@@ -13,7 +14,6 @@ packages="\
     libgcrypt \
     GnuPG \
     expat \
-    openssl \
     libssh2 \
     libldns \
     cURL \
@@ -131,8 +131,16 @@ for t in $targets; do
         ARCH_IDX=0
         while ((ARCH_IDX<ARCH_COUNT)); do
             env_setup $t
-            mkdir -p $LOGPATH
-            $base_path/build-$p.sh $t $clean 2>&1 | tee $LOGPATH/$p.log
+            logfile=$LOGPATH/$p.log
+            for i in 4 3 2 1; do
+                test -f $logfile.$i || break
+                mv $logfile.$i $logfile.$((i+1))
+            done
+            test -f $logfile && mv $logfile $logfile.1
+
+            echo $base_path/build-$p.sh $t $clean > $logfile
+            $base_path/build-$p.sh $t $clean 2>&1 | tee -a $logfile
+
             if [ ${PIPESTATUS[0]} -ne 0 ]; then
                 echo failed
                 exit 1

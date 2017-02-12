@@ -27,7 +27,7 @@ set -e
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PKG_NAME=openssl
-PKG_VERSION="1.0.2j"
+PKG_VERSION="1.1.0d"
 PKG_URL=http://www.openssl.org/source
 
 . `dirname $0`/common.sh
@@ -37,19 +37,32 @@ pkg_setup $@
 cd $PKG_DIR
 
 if [ `uname -s` = Darwin ]; then
-    if [ ${ARCH/64} = $ARCH ]; then
-        call_configure --openssldir=${PREFIX} BSD-generic32 
-    else
-        call_configure --openssldir=${PREFIX} BSD-generic64 
-    fi
+    SDK_COMPONENTS=($(echo ${SDKROOT} | sed -e 's/\/SDKs\//\'$'\n/'))
+    export CROSS_TOP="${SDK_COMPONENTS[0]}"
+    export CROSS_SDK="${SDK_COMPONENTS[1]}"
+    args=
+    case $ARCH in
+    i386)
+        args="no-shared no-asm darwin-i386-cc";;
+    x86_64)
+        args="no-shared no-asm enable-ec_nistp_64_gcc_128 darwin-x86_64-cc";;
+    arm64)
+        args="no-shared no-async zlib-dynamic enable-ec_nistp_64_gcc_128 ios64-cross";;
+    armv7)
+        args="no-shared no-async zlib-dynamic ios-cross";;
+    *)
+        echo unsupported arch $ARCH
+        exit 1
+    esac
+    call_configure --prefix=${PREFIX} $args
 else
     LDFLAGS="$LDFLAGS -dynamiclib"
     CFLAGS="$CFLAGS -UOPENSSL_BN_ASM_PART_WORDS"
 
     if [ ${PLATFORM#*64} = "$PLATFORM" ]; then
-        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${PREFIX} linux-generic32
+        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --prefix=${PREFIX} linux-generic32
     else
-        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --openssldir=${PREFIX} linux-generic64
+        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --prefix=${PREFIX} linux-generic64
     fi
 fi
 

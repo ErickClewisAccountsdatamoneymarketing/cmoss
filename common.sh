@@ -3,9 +3,11 @@ env_setup()
     case "`uname -s`" in
     Darwin)
         os="mac"
+        ncpu=$(sysctl hw.ncpu | awk '{print $2}')
         ;;
     Linux)
         os="linux"
+        ncpu=$(grep -c ^processor /proc/cpuinfo)
         ;;
     *)
         echo unsupported os
@@ -13,12 +15,11 @@ env_setup()
         ;;
     esac
 
-    export MAKE_FLAGS="-j4"
-
+    export MAKE_FLAGS="-j$((ncpu<2?2:ncpu))"
     if [ "$os" = "mac" ]; then
-        env_setup_mac
+        env_setup_mac "$@"
     else
-        env_setup_linux
+        env_setup_linux "$@"
     fi
 }
 
@@ -105,15 +106,15 @@ env_setup_mac()
     local platform=
     for arg in $@; do
         case $arg in
-        ios*)
-            platform=iPhoneOS-V${arg#ios};;
+        ios)
+            platform=iPhoneOS;;
         sim)
             platform=iPhoneSimulator;;
         mac)
             platform=MacOS;;
         esac
     done
-    test $platform || platform=iPhoneOS-V9
+    test $platform || platform=iPhoneOS
 
     host_arch="x86_64"
 
@@ -121,19 +122,16 @@ env_setup_mac()
     case $platform in
         iPhoneSimulator)
 		    export PLATFORM="iPhoneSimulator"
-            export ARCH_FAT=(i386 x86_64)
-            export CONFIG_FLAGS="--host=i386-apple-darwin"
+            export ARCH_FAT="i386 x86_64"
             ;;
-        iPhoneOS*)
-            MIN_VERSION="-miphoneos-version-min=7.0"
+        iPhoneOS)
+            MIN_VERSION="-miphoneos-version-min=8.0"
 		    export PLATFORM="iPhoneOS"
-            export ARCH_FAT=(armv7 arm64)
-            export CONFIG_FLAGS="--host=arm-apple-darwin"
+            export ARCH_FAT="armv7 arm64"
             ;;
         MacOS)
 		    export PLATFORM="MacOSX"
-            export ARCH_FAT=(i386 x86_64)
-            export CONFIG_FLAGS="--host=$host_arch-apple-darwin"
+            export ARCH_FAT="i386 x86_64"
             ;;
         *)
             echo "Unknown platform: $platform">&2
@@ -141,22 +139,23 @@ env_setup_mac()
             ;;
     esac
 
-    export ARCH_COUNT=${#ARCH_FAT[@]}
+    arch_fat=($ARCH_FAT)
+    export ARCH_COUNT=${#arch_fat[@]}
     if test $ARCH_IDX; then
-        export ARCH=${ARCH_FAT[$ARCH_IDX]}
+        export ARCH=${arch_fat[$ARCH_IDX]}
     else
-        export ARCH=${ARCH_FAT[0]}
+        export ARCH=${arch_fat[0]}
     fi
 
     export DEVELOPER=`xcode-select --print-path`
     export TOPDIR=$PWD
     export BINDIR=$TOPDIR/bin/mac
     export LOGDIR=$TOPDIR/log/mac
-    export TMPDIR=$TOPDIR/tmp
+    export TMPDIR=$TOPDIR/tmp/build/mac
     export DLDIR=$TOPDIR/dl
     export PLATFORM=${PLATFORM}
     export LOGPATH="${LOGDIR}/${PLATFORM}/$ARCH"
-    export ROOTDIR="${TMPDIR}/build/mac/${PLATFORM}/$ARCH"
+    export ROOTDIR="${TMPDIR}/${PLATFORM}/$ARCH"
     mkdir -p "${ROOTDIR}/bin"
     mkdir -p "${ROOTDIR}/include"
     mkdir -p "${ROOTDIR}/lib"
@@ -181,7 +180,7 @@ env_setup_mac()
     export CXXFLAGS="${CFLAGS}"
     export CPPFLAGS="${CFLAGS}"
 
-    CONFIG_FLAGS="$CONFIG_FLAGS --build=$host_arch-apple-darwin --prefix=$PREFIX"
+    CONFIG_FLAGS="--build=$host_arch-apple-darwin --host=$ARCH-apple-darwin --prefix=$PREFIX"
 
     cp -n $DEVELOPER/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/{crt_externs,bzlib}.h $ROOTDIR/include || true
 }
@@ -281,3 +280,4 @@ call_configure()
         touch .$PKG_NAME-configured
     fi
 }
+
