@@ -177,7 +177,7 @@ env_setup_mac()
     export CPPFLAGS="${CFLAGS}"
 
     config_arch=$ARCH
-    [ $ARCH = arm64 ] && config_arch=aarch64
+    [ $ARCH = arm64 ] && config_arch=arm
     CONFIG_FLAGS="--build=$host_arch-apple-darwin --host=$config_arch-apple-darwin --prefix=$PREFIX"
 
     cp -n $DEVELOPER/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/{crt_externs,bzlib}.h $ROOTDIR/include || true

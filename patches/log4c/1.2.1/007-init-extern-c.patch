@@ -1,0 +1,18 @@
+--- a/src/log4c/init.h	2007-09-24 12:12:16.000000000 -0700
++++ b/src/log4c/init.h	2017-02-12 19:58:09.000000000 -0800
+@@ -11,6 +11,8 @@
+ #include <log4c/defs.h>
+ #include <stdio.h>
+ 
++__LOG4C_BEGIN_DECLS
++
+ /**
+  * @file init.h
+  *
+@@ -52,4 +54,6 @@
+  */
+ LOG4C_API void log4c_dump_all_instances(FILE *fp);
+ 
++__LOG4C_END_DECLS
++
+ #endif
