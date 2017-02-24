@@ -1,0 +1,12 @@
+--- a/src/log4c/appender_type_rollingfile.c	2017-02-20 20:55:27.000000000 -0800
++++ b/src/log4c/appender_type_rollingfile.c	2017-02-20 20:53:21.000000000 -0800
+@@ -261,7 +261,8 @@
+ /*******************************************************************************/
+ 
+ LOG4C_API const char * rollingfile_udata_get_logdir(rollingfile_udata_t* rfup){
+-
++  const char *env = getenv("LOG4C_LOGDIR");
++  if(env && env[0]) return env;
+   return(rfup->rfu_conf.rfc_logdir); 
+ 
+ }
