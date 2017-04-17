@@ -21,3 +21,17 @@
  #define ARC4_LOCK_() EVLOCK_LOCK(arc4rand_lock, 0)
  #define ARC4_UNLOCK_() EVLOCK_UNLOCK(arc4rand_lock, 0)
  #ifndef EVENT__DISABLE_THREAD_SUPPORT
+--- a/arc4random.c	2016-10-05 03:55:31.000000000 +0800
++++ b/arc4random.c	2017-04-17 03:40:49.403980287 +0800
+@@ -463,7 +463,11 @@
+ 
+ #ifndef ARC4RANDOM_NOADDRANDOM
+ ARC4RANDOM_EXPORT void
++#ifdef __ANDROID__
++arc4random_addrandom(unsigned char *dat, int datlen)
++#else
+ arc4random_addrandom(const unsigned char *dat, int datlen)
++#endif
+ {
+ 	int j;
+ 	ARC4_LOCK_();

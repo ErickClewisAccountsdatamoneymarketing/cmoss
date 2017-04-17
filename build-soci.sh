@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Copyright (c) 2011, Mevan Samaratunga

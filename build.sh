@@ -84,10 +84,14 @@ base_path=`dirname $0`
 
 targets=
 clean=
-shared=
+remove_shared=
 for arg in "$@" ; do
     case $arg in
-        ios*|mac|sim|x86|arm)
+        ios*|mac|sim)
+            remove_shared=1
+            export targets="$targets $arg"
+            ;;
+        x86|arm)
             export targets="$targets $arg"
             ;;
         clean)
@@ -97,9 +101,6 @@ for arg in "$@" ; do
             for p in $packages; do
                 declare PKG_${p//[-.]/_}=1
             done
-            ;;
-        shared)
-            shared=1
             ;;
         default)
             for p in ${!default}; do
@@ -150,7 +151,7 @@ for t in $targets; do
                 exit 1
             fi
             
-            if test -z $shared; then
+            if test $remove_shared; then
                 echo removing shared library
                 (cd $PREFIX/lib;rm -f *.la *.so *.dylib)
             fi

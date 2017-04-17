@@ -201,10 +201,10 @@ EOF
 fi
 
 case ${PLATFORM} in
-*-linux-androideabi)
-    toolset="android-${PLATFORM/-linux-androideabi}"
-    ./b2 ${MAKE_FLAGS} threading=multi --layout=system toolset=$toolset install
-    exit 1
+*-linux-*)
+    toolset="android-${PLATFORM%%-*}"
+    ./b2 ${MAKE_FLAGS} threading=multi --prefix="${PREFIX}" --layout=system link=static toolset=$toolset install
+    exit
     ;;
 iPhoneSimulator)
     toolset="darwin-iosim"
