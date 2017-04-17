@@ -1,0 +1,38 @@
+--- a/src/log4c/category.c	2017-02-23 19:46:51.000000000 -0800
++++ b/src/log4c/category.c	2017-02-23 19:46:47.000000000 -0800
+@@ -258,7 +258,8 @@
+   evt.evt_msg	        = message;
+   evt.evt_loc	        = a_locinfo;
+   SD_GETTIMEOFDAY(&evt.evt_timestamp, NULL);
+-  
++  evt.evt_last_layout = 0;
++
+   for (cat = this; cat; cat = cat->cat_parent) {
+     if (cat->cat_appender)
+ 	    log4c_appender_append(cat->cat_appender, &evt);
+--- a/src/log4c/logging_event.h	2017-02-23 19:47:08.000000000 -0800
++++ b/src/log4c/logging_event.h	2017-02-23 19:47:03.000000000 -0800
+@@ -63,6 +63,8 @@
+ #endif
+     const log4c_location_info_t* evt_loc;
+ 
++    void *evt_last_layout;
++
+ } log4c_logging_event_t;
+ 
+ /**
+--- a/src/log4c/appender.c	2017-02-23 20:02:05.000000000 -0800
++++ a/src/log4c/appender.c	2017-02-23 20:02:25.000000000 -0800
+@@ -268,9 +268,12 @@
+     if (log4c_appender_open(this) == -1)
+      return -1;
+ 	
++  if(a_event->evt_last_layout != this->app_layout) {
++    a_event->evt_last_layout = this->app_layout;
+     if ( (a_event->evt_rendered_msg = 
+       log4c_layout_format(this->app_layout, a_event)) == NULL)
+         a_event->evt_rendered_msg = a_event->evt_msg;
++  }
+ 
+     return this->app_type->append(this, a_event);
+ }

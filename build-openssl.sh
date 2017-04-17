@@ -27,7 +27,7 @@ set -e
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PKG_NAME=openssl
-PKG_VERSION="1.1.0d"
+PKG_VERSION="1.1.0e"
 PKG_URL=http://www.openssl.org/source
 
 . `dirname $0`/common.sh
