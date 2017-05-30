@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 PKG_NAME=json-c
 PKG_VERSION="0.11"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 PKG_NAME="libarchive"
@@ -13,11 +13,18 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-test -f configure || autoreconf --install
-call_configure ${CONFIG_FLAGS} --disable-bsdtar --disable-bsdcat --disable-bsdcpio \
+test -f configure || build/autogen.sh
+
+test "$CMOSS_ANDROID" && \
+    export CFLAGS="-Icontrib/android/include $CFLAGS"
+
+call_configure ${CONFIG_FLAGS} --disable-bsdtar --disable-bsdcat --disable-bsdcpio --without-openssl\
     --without-bz2lib --without-lzmadec --without-iconv --without-lz4 --without-lzo2 --without-xml2
 
 ${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION
 
 make ${MAKE_FLAGS} 
 make install
+
+test "$CMOSS_ANDROID" && \
+    cp -u contrib/android/include/android_lf.h $PREFIX/include

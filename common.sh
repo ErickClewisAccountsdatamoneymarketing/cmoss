@@ -25,6 +25,7 @@ env_setup()
 
 env_setup_linux()
 {
+    export CMOSS_ANDROID=1
     local target=
     for arg in $@; do
         case $arg in
@@ -51,6 +52,7 @@ env_setup_linux()
             ;;
     esac
 
+    ARCH_COUNT=1
     ANDROID_API_LEVEL="14"
     TOOLCHAIN_VERSION="4.9"
     export TOPDIR=$PWD
@@ -70,7 +72,7 @@ env_setup_linux()
     mkdir -p $DLDIR
 
     if [ ! -d "${TMPDIR}/droidtoolchains/${PLATFORM}" ]; then
-        test $ANDROID_NDK || ANDROID_NDK="$TOPDIR/build-droid/android-ndk"
+        test $ANDROID_NDK || ANDROID_NDK="$TOPDIR/android-ndk"
 
         if test ! -e ${ANDROID_NDK}/build/tools/make-standalone-toolchain.sh; then
             echo "Invalid NDK: $ANDROID_NDK" >&2
@@ -103,6 +105,7 @@ env_setup_linux()
 
 env_setup_mac()
 {
+    export CMOSS_MAC=1
     local platform=
     for arg in $@; do
         case $arg in
@@ -266,6 +269,10 @@ pkg_setup()
 
 call_configure()
 {
+    if [ "$1" = FORCE ]; then
+        rm -f .$PKG_NAME-configured
+        shift
+    fi
     if test ! -f .$PKG_NAME-configured; then
         if test -e ./configure; then
             configure=./configure

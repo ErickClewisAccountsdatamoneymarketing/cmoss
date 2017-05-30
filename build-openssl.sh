@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Copyright (c) 2010, Pierre-Olivier Latour
@@ -36,7 +36,7 @@ env_setup $@
 pkg_setup $@
 cd $PKG_DIR
 
-if [ `uname -s` = Darwin ]; then
+if test "$CMOSS_MAC"; then
     SDK_COMPONENTS=($(echo ${SDKROOT} | sed -e 's/\/SDKs\//\'$'\n/'))
     export CROSS_TOP="${SDK_COMPONENTS[0]}"
     export CROSS_SDK="${SDK_COMPONENTS[1]}"
@@ -55,16 +55,24 @@ if [ `uname -s` = Darwin ]; then
         exit 1
     esac
     call_configure --prefix=${PREFIX} $args
+    make ${MAKE_FLAGS} CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
+elif test "$CMOSS_ANDROID"; then
+    export CROSS_SYSROOT="${SYSROOT}"
+    args=
+    case $ARCH in
+    armv7)
+        args="android-armeabi";;
+    x86)
+        args="android-x86";;
+    *)
+        echo unsupported arch $ARCH
+        exit 1
+    esac
+    call_configure --prefix=${PREFIX} $args
+    make ${MAKE_FLAGS}
 else
-    LDFLAGS="$LDFLAGS -dynamiclib"
-    CFLAGS="$CFLAGS -UOPENSSL_BN_ASM_PART_WORDS"
-
-    if [ ${PLATFORM#*64} = "$PLATFORM" ]; then
-        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --prefix=${PREFIX} linux-generic32
-    else
-        call_configure shared no-asm no-krb5 no-gost zlib-dynamic --prefix=${PREFIX} linux-generic64
-    fi
+    echo "unknown target"
+    exit 1
 fi
 
-make ${MAKE_FLAGS} CC="${CC}" CFLAG="${CFLAGS}" SHARED_LDFLAGS="${LDFLAGS}"
 make install_sw
