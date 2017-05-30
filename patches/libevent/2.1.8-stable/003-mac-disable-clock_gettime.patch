@@ -1,0 +1,11 @@
+--- a/time-internal.h	2016-10-05 03:55:31.000000000 +0800
++++ b/time-internal.h	2017-05-30 15:48:38.000000000 +0800
+@@ -43,7 +43,7 @@
+ extern "C" {
+ #endif
+ 
+-#if defined(EVENT__HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
++#if !defined(__APPLE__) && defined(EVENT__HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
+ #define HAVE_POSIX_MONOTONIC
+ #elif defined(EVENT__HAVE_MACH_ABSOLUTE_TIME)
+ #define HAVE_MACH_MONOTONIC
