@@ -1,0 +1,15 @@
+--- a/src/log4c/logging_event.h	2017-05-28 16:31:13.069908423 +0800
++++ b/src/log4c/logging_event.h	2017-05-28 16:31:33.305532745 +0800
+@@ -56,11 +56,8 @@
+ /* ok, this is probably not a good way to do it--should define a common type here
+ and have the base acessor function do the mapping
+ */
+-#ifndef _WIN32
+     struct timeval evt_timestamp;
+-#else
+-    FILETIME evt_timestamp;
+-#endif
++
+     const log4c_location_info_t* evt_loc;
+ 
+     void *evt_last_layout;

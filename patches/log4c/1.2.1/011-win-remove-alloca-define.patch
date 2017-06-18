@@ -1,0 +1,11 @@
+--- a/src/sd/sd_xplatform.h	2007-09-25 03:12:16.000000000 +0800
++++ b/src/sd/sd_xplatform.h	2017-05-28 12:41:24.316209892 +0800
+@@ -87,7 +87,7 @@
+ #ifdef _WIN32
+ #define snprintf _snprintf
+ #define vsnprintf _vsnprintf
+-#define alloca _alloca
++// #define alloca _alloca
+ #define strncasecmp strnicmp
+ #define strcasecmp stricmp
+ #define YY_NO_UNISTD_H

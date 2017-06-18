@@ -27,7 +27,7 @@ set -e
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PKG_NAME=boost
-if [ `uname -s` = Darwin ]; then
+if test $CMOSS_MAC || test $CMOSS_WIN; then
     PKG_VERSION=1.58.0
 else
     PKG_VERSION=1.48.0
@@ -73,8 +73,7 @@ ${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION
 
 if test ! -f .$PKG_NAME-configured; then
 
-    case ${PLATFORM} in
-    *linux*)
+    if test $CMOSS_ANDROID; then
         cat > tools/build/v2/user-config.jam <<EOF
 using android : i686 : ${DROIDTOOLS}-g++ :
 <compileflags>-Os
@@ -136,9 +135,17 @@ using android : arm : ${DROIDTOOLS}-g++ :
 <cxxflags>-D_GLIBCXX_USE_WCHAR_T
 ;
 EOF
-        ;;
+    elif test $CMOSS_WIN; then
+        cat > tools/build/src/user-config.jam <<EOF
+using gcc : ${PLATFORM%%-*} : ${PLATFORM}-g++ :
+<compileflags>-I${PREFIX}/include
+<linkflags>-Wl,--gc-sections
+<linkflags>-L${PREFIX}/lib
+<compileflags>-fdata-sections
+;
+EOF
+    elif test $CMOSS_MAC; then
 
-    *)
         MIN_IOS_VERSION=8.0
         # IOS_SDK_VERSION=`xcrun --sdk iphoneos --show-sdk-version`
 
@@ -191,7 +198,10 @@ using darwin : osx
 ;
 EOF
         esac
-    esac
+    else
+        echo unsupported platform
+        exit 1
+    fi
 
     cat > project-config.jam <<EOF
 libraries = --with-date_time --with-filesystem --with-program_options --with-regex --with-signals --with-system --with-thread --with-iostreams ;
@@ -214,6 +224,11 @@ iPhoneOS)
     ;;
 MacOSX)
     toolset="darwin-osx"
+    ;;
+*-mingw32)
+    # mingw cannot use system layout. It relies on Jamroot to build boost automatically
+    # ./b2 ${MAKE_FLAGS} threading=multi threadapi=win32 -sNO_BZIP2=1 --prefix="${PREFIX}" --layout=tagged link=static toolset=gcc-mingw install
+    exit
     ;;
 esac
 

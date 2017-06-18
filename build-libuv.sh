@@ -18,5 +18,5 @@ call_configure ${CONFIG_FLAGS}
 
 ${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION
 
-make ${MAKE_FLAGS} 
+make V=1 ${MAKE_FLAGS} 
 make install

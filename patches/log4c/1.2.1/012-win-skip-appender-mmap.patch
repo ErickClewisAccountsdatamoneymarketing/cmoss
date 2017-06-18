@@ -1,0 +1,16 @@
+--- a/src/log4c/appender_type_mmap.c	2007-09-25 03:12:16.000000000 +0800
++++ b/src/log4c/appender_type_mmap.c	2017-05-28 12:48:49.613888892 +0800
+@@ -12,6 +12,8 @@
+ #include "config.h"
+ #endif
+ 
++#ifdef HAVE_MMAP
++
+ #include <log4c/appender.h>
+ #include <sd/malloc.h>
+ #include <sys/mman.h>
+@@ -151,3 +153,4 @@
+     mmap_close,
+ };
+ 
++#endif

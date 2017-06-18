@@ -48,7 +48,6 @@ target_linux=arm
 default_mac="\
     libevent \
     liblog4c \
-    cURL \
     boost \
     libldns \
     libjudy \
@@ -59,6 +58,19 @@ default_mac="\
     libarchive \
 "
 target_mac=ios9
+
+default_win="\
+    libevent \
+    liblog4c \
+    boost \
+    libldns \
+    libjudy \
+    expat \
+    openssl \
+    libuv \
+    libarchive \
+"
+target_win=mingw
 
 case "`uname -s`" in
 Darwin)
@@ -73,8 +85,7 @@ Linux)
     ;;
 esac
 
-default=default_$os
-target_default=target_$os
+export CMOSS_TARGET_OS=$os
 
 for p in ${packages[@]}; do
     declare PKG_${p//[-.]/_}=0
@@ -87,6 +98,10 @@ clean=
 remove_shared=
 for arg in "$@" ; do
     case $arg in
+        mingw|mingw64)
+            export CMOSS_TARGET_OS=win
+            export targets="$targets $arg"
+            ;;
         ios*|mac|sim)
             remove_shared=1
             export targets="$targets $arg"
@@ -118,6 +133,9 @@ for arg in "$@" ; do
             ;;
     esac
 done
+
+default=default_$CMOSS_TARGET_OS
+target_default=target_$CMOSS_TARGET_OS
 
 test $targets || targets=${!target_default}
 

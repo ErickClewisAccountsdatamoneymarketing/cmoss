@@ -1,0 +1,23 @@
+--- a/src/log4c/config-win32.h	2017-06-13 14:24:19.196524437 +0800
++++ b/src/log4c/config-win32.h	2017-06-13 14:24:16.700564460 +0800
+@@ -16,16 +16,16 @@
+ 
+ #undef LOG4C_API
+ #ifdef LOG4C_EXPORTS
+-#    define LOG4C_API         __declspec(dllexport)
++#    define LOG4C_API         
+ #else
+-#    define LOG4C_API       extern __declspec(dllimport)
++#    define LOG4C_API       extern 
+ #endif
+ 
+ #undef LOG4C_DATA
+ #ifdef LOG4C_EXPORTS
+-#    define LOG4C_DATA        __declspec(dllexport)
++#    define LOG4C_DATA       
+ #else
+-#    define LOG4C_DATA       extern __declspec(dllimport)
++#    define LOG4C_DATA       extern
+ #endif
+ 
+ 

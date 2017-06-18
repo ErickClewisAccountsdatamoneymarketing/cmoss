@@ -70,6 +70,19 @@ elif test "$CMOSS_ANDROID"; then
     esac
     call_configure --prefix=${PREFIX} $args
     make ${MAKE_FLAGS}
+elif test "$CMOSS_WIN"; then
+    args=
+    case $ARCH in
+    i686)
+        args="mingw";;
+    x86_64)
+        args="mingw64";;
+    *)
+        echo unsupported arch $ARCH
+        exit 1
+    esac
+    call_configure --prefix=${PREFIX} $args
+    make ${MAKE_FLAGS}
 else
     echo "unknown target"
     exit 1

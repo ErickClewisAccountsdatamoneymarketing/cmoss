@@ -16,11 +16,7 @@ env_setup()
     esac
 
     export MAKE_FLAGS="-j$((ncpu<2?2:ncpu))"
-    if [ "$os" = "mac" ]; then
-        env_setup_mac "$@"
-    else
-        env_setup_linux "$@"
-    fi
+    env_setup_$CMOSS_TARGET_OS "$@"
 }
 
 env_setup_linux()
@@ -102,6 +98,61 @@ env_setup_linux()
     export CXXFLAGS="-Os -pipe -isysroot ${SYSROOT} -I${ROOTDIR}/include"
     export LDFLAGS_CPP="-nostdlib -lc -Wl,-rpath-link=${SYSROOT}/usr/lib -L${SYSROOT}/usr/lib -L${ROOTDIR}/lib"
 }
+
+env_setup_win()
+{
+    export CMOSS_WIN=1
+    local target=$1
+    test $target || target=mingw
+
+    case $target in
+        mingw)
+            export PLATFORM="i686-w64-mingw32"
+            export ARCH="i686"
+            ;;
+        mingw64)
+            export PLATFORM="x86_64-w64-mingw32"
+            export ARCH="x86_64"
+            ;;
+        *)
+            echo "Unknown target: $target">&2
+            exit 1
+            ;;
+    esac
+
+    ARCH_COUNT=1
+    export TOPDIR=$PWD
+    export BINDIR=$TOPDIR/bin/win
+    export LOGDIR=$TOPDIR/log/win
+    export TMPDIR=$TOPDIR/tmp
+    export DLDIR=$TOPDIR/dl
+    export CONFIG_FLAGS="--host=${PLATFORM} --build=x86_64-pc-linux --target=${PLATFORM} --prefix=${PREFIX} --disable-shared"
+    # export SYSROOT=usr/${PLATFORM}
+    export LOGPATH="${LOGDIR}/${PLATFORM}"
+    export ROOTDIR="${TMPDIR}/build/win/${PLATFORM}"
+    export PREFIX="${ROOTDIR}/usr"
+    mkdir -p "${ROOTDIR}"
+    mkdir -p "${PREFIX}"
+    mkdir -p $DLDIR
+    mkdir -p "$LOGPATH"
+
+    export CC=${PLATFORM}-gcc
+    export LD=${PLATFORM}-ld
+    export CPP=${PLATFORM}-cpp
+    export CXX=${PLATFORM}-g++
+    export AR=${PLATFORM}-ar
+    export AS=${PLATFORM}-as
+    export NM=${PLATFORM}-nm
+    export STRIP=${PLATFORM}-strip
+    export CXXCPP=${PLATFORM}-cpp
+    export RANLIB=${PLATFORM}-ranlib
+    export RC=${PLATFORM}-windres
+    export LDFLAGS="-Os -pipe -L${ROOTDIR}/usr/lib"
+    export CFLAGS="-Os -pipe -I${ROOTDIR}/usr/include"
+    export CXXFLAGS="-Os -pipe -I${ROOTDIR}/usr/include"
+    # export LDFLAGS_CPP="-nostdlib -lc"
+}
+
 
 env_setup_mac()
 {

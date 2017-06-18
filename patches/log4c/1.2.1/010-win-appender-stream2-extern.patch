@@ -1,0 +1,11 @@
+--- a/src/log4c/appender_type_stream2.h	2017-05-28 12:33:52.011648757 +0800
++++ b/src/log4c/appender_type_stream2.h	2017-05-28 12:36:40.348826035 +0800
+@@ -88,7 +88,7 @@
+  * routine to set the type of the appender.
+  *
+  **/
+-LOG4C_API const log4c_appender_type_t log4c_appender_type_stream2;
++extern const log4c_appender_type_t log4c_appender_type_stream2;
+ 
+ /**
+  * Set the file pointer for this appender.
