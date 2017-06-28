@@ -13,7 +13,7 @@ cd $PKG_DIR
 
 ${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION || exit 1
 
-call_configure ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes ${CONFIG_FLAGS} --without-expat --with-gnu-ld
+call_configure ac_cv_lib_pthread_pthread_mutex_init=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes ${CONFIG_FLAGS} --without-expat --with-gnu-ld
 
 make ${MAKE_FLAGS}
 make install
