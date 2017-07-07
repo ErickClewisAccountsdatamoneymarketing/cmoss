@@ -1,0 +1,11 @@
+--- a/libarchive/archive_read_disk_windows.c	2017-07-08 02:35:42.464063366 +0800
++++ b/libarchive/archive_read_disk_windows.c	2017-07-08 02:35:38.320185350 +0800
+@@ -934,7 +934,7 @@
+ 		else
+ 			flags |= FILE_FLAG_SEQUENTIAL_SCAN;
+ 		t->entry_fh = CreateFileW(tree_current_access_path(t),
+-		    GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, flags, NULL);
++		    GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, OPEN_EXISTING, flags, NULL);
+ 		if (t->entry_fh == INVALID_HANDLE_VALUE) {
+ 			archive_set_error(&a->archive, GetLastError(),
+ 			    "Couldn't open %ls", tree_current_path(a->tree));
