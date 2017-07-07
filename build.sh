@@ -96,8 +96,12 @@ base_path=`dirname $0`
 targets=
 clean=
 remove_shared=
+export CMOSS_DEBUG=
 for arg in "$@" ; do
     case $arg in
+        debug)
+            export CMOSS_DEBUG=1
+            ;;
         mingw|mingw64)
             export CMOSS_TARGET_OS=win
             export targets="$targets $arg"

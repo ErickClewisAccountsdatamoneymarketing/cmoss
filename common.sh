@@ -15,6 +15,12 @@ env_setup()
         ;;
     esac
 
+    if test $CMOSS_DEBUG; then
+        op="-Og"
+    else
+        op="-Os"
+    fi
+
     export MAKE_FLAGS="-j$((ncpu<2?2:ncpu))"
     env_setup_$CMOSS_TARGET_OS "$@"
 }
@@ -147,9 +153,9 @@ env_setup_win()
     export CXXCPP=${PLATFORM}-cpp
     export RANLIB=${PLATFORM}-ranlib
     export RC=${PLATFORM}-windres
-    export LDFLAGS="-Os -pipe -L${ROOTDIR}/usr/lib"
-    export CFLAGS="-Os -pipe -I${ROOTDIR}/usr/include"
-    export CXXFLAGS="-Os -pipe -I${ROOTDIR}/usr/include"
+    export LDFLAGS="$op -pipe -L${ROOTDIR}/usr/lib"
+    export CFLAGS="$op -g -pipe -I${ROOTDIR}/usr/include -mno-ms-bitfields"
+    export CXXFLAGS="$op -g -pipe -I${ROOTDIR}/usr/include"
     # export LDFLAGS_CPP="-nostdlib -lc"
 }
 
