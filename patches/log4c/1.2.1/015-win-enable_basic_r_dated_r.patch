@@ -1,0 +1,123 @@
+--- a/src/log4c/init.c	2017-06-28 16:40:02.455251590 +0800
++++ b/src/log4c/init.c	2017-07-01 17:57:24.949462987 +0800
+@@ -41,11 +41,8 @@
+ static const log4c_layout_type_t * const layout_types[] = {
+     &log4c_layout_type_basic,
+     &log4c_layout_type_dated,
+-    /* These appenders are not yet ported with msvc */
+-#ifndef _WIN32
+     &log4c_layout_type_basic_r,
+     &log4c_layout_type_dated_r    
+-#endif
+ };
+ static size_t nlayout_types = sizeof(layout_types) / sizeof(layout_types[0]);
+ 
+--- a/src/log4c/logging_event.h	2017-07-02 03:18:22.664516117 +0800
++++ b/src/log4c/logging_event.h	2017-07-02 03:18:19.348557822 +0800
+@@ -56,7 +56,11 @@
+ /* ok, this is probably not a good way to do it--should define a common type here
+ and have the base acessor function do the mapping
+ */
++#ifdef _WIN32
++    SYSTEMTIME evt_timestamp;
++#else
+     struct timeval evt_timestamp;
++#endif
+ 
+     const log4c_location_info_t* evt_loc;
+ 
+--- a/src/log4c/layout_type_dated_r.c	2017-07-02 04:06:43.071753634 +0800
++++ b/src/log4c/layout_type_dated_r.c	2017-07-02 04:06:35.611910030 +0800
+@@ -21,23 +21,12 @@
+     const log4c_logging_event_t*a_event)
+ {
+     int n, i;
+-    struct tm	tm;
+-
+ #ifndef _WIN32
+ #ifndef __HP_cc
+ #warning gmtime() routine should be defined in sd_xplatform
+ #endif
+-    gmtime_r(&a_event->evt_timestamp.tv_sec, &tm);
+-#else
+-    /* xxx Need a CreateMutex/ReleaseMutex or something here
+-     */
+-    { 
+-	struct tm *tmp = NULL;
+-	tmp = gmtime(&a_event->evt_timestamp.tv_sec);
+-	tm = *tmp; /* struct copy */
+-    }
+-#endif
+-
++    struct tm	tm;
++    localtime_r(&a_event->evt_timestamp.tv_sec, &tm);
+     n = snprintf(a_event->evt_buffer.buf_data, a_event->evt_buffer.buf_size,
+ 		 "%04d%02d%02d %02d:%02d:%02d.%03ld %-8s %s - %s\n",
+ 		 tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+@@ -45,6 +34,16 @@
+ 		 a_event->evt_timestamp.tv_usec / 1000,
+ 		 log4c_priority_to_string(a_event->evt_priority),
+ 		 a_event->evt_category, a_event->evt_msg);
++#else
++    SYSTEMTIME *stime = &a_event->evt_timestamp;
++    n = snprintf(a_event->evt_buffer.buf_data, a_event->evt_buffer.buf_size,
++            "%04d%02d%02d %02d:%02d:%02d.%03ld %-8s %s- %s\n",
++            stime->wYear, stime->wMonth , stime->wDay,
++            stime->wHour, stime->wMinute, stime->wSecond,
++            stime->wMilliseconds,
++            log4c_priority_to_string(a_event->evt_priority),
++            a_event->evt_category, a_event->evt_msg);
++#endif
+ 
+     if (n >= a_event->evt_buffer.buf_size) {
+ 	/*
+--- a/src/sd/sd_xplatform.c	2017-07-02 04:08:23.076862039 +0800
++++ b/src/sd/sd_xplatform.c	2017-07-02 04:08:17.281198926 +0800
+@@ -98,10 +98,10 @@
+ };
+ #endif /* _TIMEVAL_DEFINED */
+ 
+-int sd_gettimeofday(LPFILETIME lpft, void* tzp) {
++int sd_gettimeofday(SYSTEMTIME *lpft, void* tzp) {
+ 
+     if (lpft) {
+-        GetSystemTimeAsFileTime(lpft);
++        GetLocalTime(lpft);
+     }
+     /* 0 indicates that the call succeeded. */
+     return 0;
+--- a/src/sd/sd_xplatform.h	2017-07-02 04:08:04.701937344 +0800
++++ b/src/sd/sd_xplatform.h	2017-07-02 04:08:00.478134703 +0800
+@@ -57,7 +57,7 @@
+ 
+ #ifdef _WIN32
+ #define SD_GETTIMEOFDAY(a,b) sd_gettimeofday(a,b)
+-extern int sd_gettimeofday(LPFILETIME lpft, void* tzp);
++extern int sd_gettimeofday(SYSTEMTIME *lpft, void* tzp);
+ #else
+ #define SD_GETTIMEOFDAY(a,b) gettimeofday(a,b)
+ extern int sd_gettimeofday(struct timeval* tp, void* tzp);
+--- a/src/log4c/layout_type_dated.c	2017-07-02 04:20:12.046021984 +0800
++++ b/src/log4c/layout_type_dated.c	2017-07-02 04:20:07.150190288 +0800
+@@ -36,17 +36,13 @@
+              log4c_priority_to_string(a_event->evt_priority),
+              a_event->evt_category, a_event->evt_msg);
+ #else
+-        SYSTEMTIME stime;
+-
+-        if ( FileTimeToSystemTime(&a_event->evt_timestamp, &stime)){
+-
++        SYSTEMTIME *stime = &a_event->evt_timestamp;
+     snprintf(buffer, sizeof(buffer), "%04d%02d%02d %02d:%02d:%02d.%03ld %-8s %s- %s\n",
+-             stime.wYear, stime.wMonth , stime.wDay,
+-             stime.wHour, stime.wMinute, stime.wSecond,
+-             stime.wMilliseconds,
++             stime->wYear, stime->wMonth , stime->wDay,
++             stime->wHour, stime->wMinute, stime->wSecond,
++             stime->wMilliseconds,
+              log4c_priority_to_string(a_event->evt_priority),
+              a_event->evt_category, a_event->evt_msg);
+-        }
+ #endif
+     return buffer;
+ }
