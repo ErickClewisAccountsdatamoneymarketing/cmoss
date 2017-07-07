@@ -16,7 +16,7 @@ if [ `uname -s` = 'Darwin' ]; then
     for f in Judy1 JudyL; do
         sed -i "" "s/gcc/env -i PATH='\${PATH}' LANG='\${LANG}' gcc${gcc_op}/g" src/$f/Makefile.in
     done
-elif [ ${PLATFORM/64} = "$PLATFORM" ]; then
+elif [ ${ARCH/64} = "$ARCH" ]; then
     sed -i "s/gcc/gcc -m32/g" src/Judy1/Makefile.in
     sed -i "s/gcc/gcc -m32/g" src/JudyL/Makefile.in
 fi
