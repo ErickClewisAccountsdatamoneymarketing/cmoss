@@ -1,0 +1,12 @@
+--- a/libs/thread/src/win32/thread.cpp	2015-03-21 22:44:02.000000000 +0800
++++ b/libs/thread/src/win32/thread.cpp	2017-12-15 12:18:59.448708252 +0800
+@@ -526,7 +526,8 @@
+ 
+     unsigned thread::physical_concurrency() BOOST_NOEXCEPT
+     {
+-#if BOOST_PLAT_WINDOWS_RUNTIME || (defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR))
++// #if BOOST_PLAT_WINDOWS_RUNTIME || (defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR))
++#if 1
+         return hardware_concurrency();
+ #else
+         unsigned cores = 0;

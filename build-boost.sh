@@ -227,7 +227,7 @@ MacOSX)
     ;;
 *-mingw32)
     # mingw cannot use system layout. It relies on Jamroot to build boost automatically
-    # ./b2 ${MAKE_FLAGS} threading=multi threadapi=win32 -sNO_BZIP2=1 --prefix="${PREFIX}" --layout=tagged link=static toolset=gcc-mingw install
+    ./b2 ${MAKE_FLAGS} threading=multi threadapi=win32 -sNO_BZIP2=1 --prefix="${PREFIX}" --layout=tagged link=static toolset=gcc-mingw install
     exit
     ;;
 esac
