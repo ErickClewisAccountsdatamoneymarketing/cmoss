@@ -45,7 +45,7 @@ if test "$CMOSS_MAC"; then
     i386)
         args="no-shared no-asm darwin-i386-cc";;
     x86_64)
-        args="no-shared no-asm enable-ec_nistp_64_gcc_128 darwin-x86_64-cc";;
+        args="no-shared no-asm enable-ec_nistp_64_gcc_128 darwin64-x86_64-cc";;
     arm64)
         args="no-shared no-async zlib-dynamic enable-ec_nistp_64_gcc_128 ios64-cross";;
     armv7)

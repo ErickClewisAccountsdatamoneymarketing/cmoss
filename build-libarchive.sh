@@ -26,5 +26,6 @@ ${TOPDIR}/patch.sh $PKG_NAME -v $PKG_VERSION
 make ${MAKE_FLAGS} 
 make install
 
-test "$CMOSS_ANDROID" && \
+if test "$CMOSS_ANDROID"; then
     cp -u contrib/android/include/android_lf.h $PREFIX/include
+fi

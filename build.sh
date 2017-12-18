@@ -91,6 +91,9 @@ for p in ${packages[@]}; do
     declare PKG_${p//[-.]/_}=0
 done
 
+default=default_$CMOSS_TARGET_OS
+target_default=target_$CMOSS_TARGET_OS
+
 base_path=`dirname $0`
 
 targets=
@@ -138,9 +141,6 @@ for arg in "$@" ; do
     esac
 done
 
-default=default_$CMOSS_TARGET_OS
-target_default=target_$CMOSS_TARGET_OS
-
 test $targets || targets=${!target_default}
 
 . `dirname $0`/common.sh
@@ -158,6 +158,7 @@ for t in $targets; do
         ARCH_IDX=0
         while ((ARCH_IDX<ARCH_COUNT)); do
             env_setup $t
+            mkdir -p $LOGPATH
             logfile=$LOGPATH/$p.log
             for i in 4 3 2 1; do
                 test -f $logfile.$i || break
