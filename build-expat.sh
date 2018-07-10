@@ -28,7 +28,8 @@ set -e
 
 PKG_NAME=expat
 PKG_VERSION=2.0.1
-PKG_URL=http://ncu.dl.sourceforge.net/project/expat/expat/$PKG_VERSION
+# PKG_URL=http://ncu.dl.sourceforge.net/project/expat/expat/$PKG_VERSION
+PKG_URL=https://github.com/libexpat/libexpat/releases/download/R_2_0_1
 
 . `dirname $0`/common.sh
 env_setup $@
