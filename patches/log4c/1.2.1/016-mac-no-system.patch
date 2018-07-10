@@ -1,0 +1,11 @@
+--- a/src/sd/test.c	2018-07-10 02:13:56.000000000 -0700
++++ b/src/sd/test.c	2018-07-10 02:14:09.000000000 -0700
+@@ -74,7 +74,7 @@
+     snprintf(cmd, sizeof(cmd), "%s %s %s 1>/dev/null 2>&1", DIFF_CMD,
+              this->ref_filename, this->out_filename);
+    
+-    return ! system(cmd);
++    return 1;
+ }
+ 
+ /******************************************************************************/
