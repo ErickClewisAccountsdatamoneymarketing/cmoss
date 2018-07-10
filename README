@@ -44,11 +44,12 @@ MacOSX Prerequesite:
 
 * Install command line tools:
     xcode-select install
+    You probably need to manually open XCode and select xcode command line tools in 'Preference->location'
 
 * Install homebrew
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-    brew install automake libtool
+    brew install automake libtool wget pkg-config
 
 To build the above libraries, simply
     ./build.sh default
